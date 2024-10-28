@@ -15,7 +15,9 @@ class Game < Gosu::Window
   end
   
   def button_down(id)
-    close if id == Gosu::KB_ESCAPE
+    case id
+      when  Gosu::KB_ESCAPE
+        close
   end
 
   def update
