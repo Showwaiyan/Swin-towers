@@ -13,10 +13,7 @@ class Game < Gosu::Window
     self.caption = 'Swin Towers'
     @bg = Gosu::Image.new('Assets/map/map.png')
     @path = []
-    @enemies = [
-      Enemy.new('orc'),
-      Enemy.new('orc')
-    ]
+    @enemies = []
   end
   
   def button_down(id)
