@@ -22,6 +22,7 @@ class Enemy
 
   def update
     self.move
+    self.update_frame
   end
 
   def draw 
@@ -47,6 +48,10 @@ class Enemy
       @path.shift # remove the previous target from the path
       target = Vector.elements(@path.first) if @path.any? # this check whether the path array is empty
     end
+  end
+
+  def update_frame
+    @current_frame = (Gosu::milliseconds / FRAME_DELAY) % @obj.size
   end
 
   def diaplay_health_bar
