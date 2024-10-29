@@ -3,7 +3,7 @@ require 'matrix'
 require_relative 'constant.rb'
 
 class Enemy
-  attr_accessor :obj, :pos, :hp, :speed, :path, :current_frame
+  attr_accessor :obj, :pos, :max_hp, :speed, :path, :current_hp, :current_frame, :current_direction, :current_animation
 
   def initialize(species)
     @path = PATHS.sample # Generating random path
@@ -14,8 +14,9 @@ class Enemy
     case species
       when 'orc'
         @obj = Gosu::Image.load_tiles(ORC_SPRITE+@current_direction+@current_animation+'.png', ORC_SPRITE_WIDTH, ORC_SPRITE_HEIGHT)
-        @hp = ORC_HP
+        @max_hp = ORC_HP
         @speed = ORC_SPEED
+        @current_hp = @max_hp
     end 
   end
 
@@ -25,6 +26,7 @@ class Enemy
 
   def draw 
     @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), ZOrder::CHAR)
+    self.diaplay_health_bar
   end
 
   def move
@@ -47,7 +49,18 @@ class Enemy
     end
   end
 
-  # Center the enemy image
+  def diaplay_health_bar
+    hp_bar_pos = [@pos[0]-ORC_SPRITE_WIDTH/2,@pos[1]-ORC_SPRITE_HEIGHT/2+5] # 5 is the offset
+    Gosu::draw_rect(hp_bar_pos[0], hp_bar_pos[1], HP_BAR_WIDTH, HP_BAR_HEIGHT, BAR_HP_COLOR)
+    Gosu::draw_rect(hp_bar_pos[0], hp_bar_pos[1], calculate_current_hp_bar_width, HP_BAR_HEIGHT, PLAYER_HP_COLOR)
+  end
+
+  def calculate_current_hp_bar_width
+    return ((@current_hp.to_f/@max_hp.to_f).to_f * HP_BAR_WIDTH.to_f).to_f if @current_hp > 0
+    return 0
+  end
+
+  # Center the enemy sprites
   def center_x(x)
     x - (@obj[current_frame].width / 2)
   end

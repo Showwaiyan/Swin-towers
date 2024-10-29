@@ -14,6 +14,7 @@ class Game < Gosu::Window
     @bg = Gosu::Image.new('Assets/map/map.png')
     @path = []
     @enemies = [
+      Enemy.new('orc'),
       Enemy.new('orc')
     ]
   end

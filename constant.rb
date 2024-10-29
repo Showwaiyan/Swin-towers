@@ -1,6 +1,13 @@
+require 'gosu'
+
 # Constant for Display
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
+
+HP_BAR_WIDTH = 50
+HP_BAR_HEIGHT = 5
+BAR_HP_COLOR = Gosu::Color::RED
+PLAYER_HP_COLOR = Gosu::Color::GREEN
 
 # Constant for sprites
 # Direction and Animation
@@ -11,7 +18,7 @@ WALK = '_Walk'
 ORC_SPRITE = 'Assets/orc/'
 ORC_SPRITE_WIDTH = 48
 ORC_SPRITE_HEIGHT = 48
-ORC_HP = 1
+ORC_HP = 20
 ORC_SPEED = 1
 
 # Path for Enemy
