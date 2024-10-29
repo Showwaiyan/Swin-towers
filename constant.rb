@@ -2,6 +2,18 @@
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
 
+# Constant for sprites
+# Direction and Animation
+RIGHT = 'R'
+WALK = '_Walk'
+
+# Orc
+ORC_SPRITE = 'Assets/orc/'
+ORC_SPRITE_WIDTH = 48
+ORC_SPRITE_HEIGHT = 48
+ORC_HP = 1
+ORC_SPEED = 1
+
 # Path for Enemy
 PATH1 = [[0, 315], [79, 280], [185, 210], [283, 167], [367, 255], [288, 433], [208, 526], [269, 597], [365, 632], [500, 618], [625, 544], [733, 474], [835, 472], [875, 558], [915, 589], [1024, 630]]
 PATH2 = [[0, 252], [156, 266], [229, 217], [374, 204], [314, 348], [285, 486], [221, 534], [341, 644], [523, 617], [674, 507], [814, 443], [889, 572], [1024, 656]]

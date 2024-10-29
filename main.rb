@@ -13,7 +13,9 @@ class Game < Gosu::Window
     self.caption = 'Swin Towers'
     @bg = Gosu::Image.new('Assets/map/map.png')
     @path = []
-    @enemies = []
+    @enemies = [
+      Enemy.new('orc')
+    ]
   end
   
   def button_down(id)
@@ -24,11 +26,12 @@ class Game < Gosu::Window
   end
 
   def update
+    @enemies.each { |enemy| enemy.update }
   end
 
   def draw
     @bg.draw(0, 0, ZOrder::BACKGROUND)
-    @enemies.each { |enemy| enemy.move }
+    @enemies.each { |enemy| enemy.draw }
   end
 end
 
