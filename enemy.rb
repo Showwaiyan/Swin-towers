@@ -22,7 +22,6 @@ class Enemy
 
   def update
     self.move
-    self.update_frame
   end
 
   def draw 
@@ -40,7 +39,11 @@ class Enemy
     # move the enemy
     @pos += direction
 
-    # draw the enemy
+    # Change direction and animation if needed
+    update_sprites(direction)
+
+    # Update the frame
+    update_frame
 
     # Checking if the enemy has reached the target
     if (@pos - target).magnitude < @speed
@@ -52,6 +55,27 @@ class Enemy
 
   def update_frame
     @current_frame = (Gosu::milliseconds / FRAME_DELAY) % @obj.size
+  end
+
+  def update_sprites(direction)
+    if update_direction(direction)
+      @obj = Gosu::Image.load_tiles(ORC_SPRITE+@current_direction+@current_animation+'.png', ORC_SPRITE_WIDTH, ORC_SPRITE_HEIGHT)
+    end
+  end
+
+  def update_direction(direction)
+    previous_direction = @current_direction
+    angle = Math.atan2(direction[1], direction[0]).to_f
+    if angle > -Math::PI/4 && angle <= Math::PI/4
+      @current_direction = 'R'
+    elsif angle > Math::PI/4 && angle <= 3*Math::PI/4
+      @current_direction = 'D'
+    elsif angle > 3*Math::PI/4 || angle <= -3*Math::PI/4
+      @current_direction = 'L'
+    else
+      @current_direction = 'U'
+    end
+    return previous_direction != @current_direction
   end
 
   def diaplay_health_bar

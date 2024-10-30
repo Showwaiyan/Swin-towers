@@ -12,6 +12,7 @@ class Game < Gosu::Window
     super(SCREEN_WIDTH, SCREEN_HEIGHT)
     self.caption = 'Swin Towers'
     @bg = Gosu::Image.new('Assets/map/map.png')
+    @enemies = []
   end
   
   def button_down(id)
