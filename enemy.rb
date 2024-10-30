@@ -3,11 +3,12 @@ require 'matrix'
 require_relative 'constant.rb'
 
 class Enemy
-  attr_accessor :obj, :pos, :max_hp, :speed, :species, :path, :current_hp, :current_frame, :current_direction, :current_animation
+  attr_accessor :obj, :alive, :pos, :max_hp, :speed, :species, :path, :current_hp, :current_frame, :current_direction, :current_animation
 
   def initialize(species)
+    @alive = true
     @species = species
-    @path = PATHS.sample # Generating random path
+    @path = PATHS.sample.dup # Generating random path
     @pos = Vector.elements(@path.shift) # pos is a 2D vector
     @current_frame = 0
     @current_direction = RIGHT
@@ -37,12 +38,18 @@ class Enemy
   end
 
   def update
-    self.move
+    if @alive
+        self.move
+    else 
+      self.desotry
+    end
   end
 
   def draw 
-    @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), ZOrder::CHAR)
-    self.diaplay_health_bar
+    if @alive
+      @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), ZOrder::CHAR)
+      self.diaplay_health_bar
+    end
   end
 
   def move
@@ -112,6 +119,19 @@ class Enemy
   def calculate_current_hp_bar_width
     return ((@current_hp.to_f/@max_hp.to_f).to_f * HP_BAR_WIDTH.to_f).to_f if @current_hp > 0
     return 0
+  end
+
+  def check_death
+    #passed
+  end
+
+  # Checking if enemy reach the end of the path
+  def check_path_end
+    return @path.empty?
+  end
+
+  def desotry
+    @alive = false if check_path_end
   end
 
   # Center the enemy sprites

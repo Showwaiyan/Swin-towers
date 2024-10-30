@@ -12,7 +12,6 @@ class Game < Gosu::Window
     super(SCREEN_WIDTH, SCREEN_HEIGHT)
     self.caption = 'Swin Towers'
     @bg = Gosu::Image.new('Assets/map/map.png')
-    @enemies = []
   end
   
   def button_down(id)
@@ -23,7 +22,9 @@ class Game < Gosu::Window
   end
 
   def update
+    @enemies.compact!
     @enemies.each { |enemy| enemy.update }
+    @enemies.delete_if { |enemy| enemy.check_path_end }
   end
 
   def draw
