@@ -3,10 +3,10 @@ require 'matrix'
 require_relative 'constant.rb'
 
 class Enemy
-  attr_accessor :obj, :alive, :pos, :max_hp, :speed, :species, :path, :current_hp, :current_frame, :current_direction, :current_animation
+  attr_accessor :obj, :destory :pos, :max_hp, :speed, :species, :path, :current_hp, :current_frame, :current_direction, :current_animation
 
   def initialize(species)
-    @alive = true
+    @destory = false # destory the whole object from game
     @species = species
     @path = PATHS.sample.dup # Generating random path
     @pos = Vector.elements(@path.shift) # pos is a 2D vector
@@ -39,9 +39,8 @@ class Enemy
 
   def update
     unless is_death?
-        self.move
+      self.move
     else 
-      @alive = false
       self.desotry
     end
   end
@@ -122,7 +121,6 @@ class Enemy
 
   def is_death?
     #passed
-    return @current_hp <= 0
   end
 
   # Checking if enemy reach the end of the path
