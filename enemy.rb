@@ -38,22 +38,21 @@ class Enemy
   end
 
   def update
-    if @alive
+    unless is_death?
         self.move
     else 
+      @alive = false
       self.desotry
     end
   end
 
   def draw 
-    if @alive
-      @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), ZOrder::CHAR)
-      self.diaplay_health_bar
-    end
+    @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), ZOrder::CHAR)
+    self.diaplay_health_bar if !is_death?
   end
 
   def move
-    return if @path.empty? # return if the path array is empty
+    return if check_path_end? # instant return if the path array is empty
     # Calculate the direction to the next target
     target = Vector.elements(@path.first)
     direction = target - @pos
@@ -121,17 +120,18 @@ class Enemy
     return 0
   end
 
-  def check_death
+  def is_death?
     #passed
+    return @current_hp <= 0
   end
 
   # Checking if enemy reach the end of the path
-  def check_path_end
+  def check_path_end?
     return @path.empty?
   end
 
   def desotry
-    @alive = false if check_path_end
+    # death animation
   end
 
   # Center the enemy sprites
