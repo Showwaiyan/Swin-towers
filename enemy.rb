@@ -67,13 +67,13 @@ class Enemy
     previous_direction = @current_direction
     angle = Math.atan2(direction[1], direction[0]).to_f
     if angle > -Math::PI/4 && angle <= Math::PI/4
-      @current_direction = 'R'
+      @current_direction = RIGHT
     elsif angle > Math::PI/4 && angle <= 3*Math::PI/4
-      @current_direction = 'D'
+      @current_direction = DOWN
     elsif angle > 3*Math::PI/4 || angle <= -3*Math::PI/4
-      @current_direction = 'L'
+      @current_direction = LEFT
     else
-      @current_direction = 'U'
+      @current_direction = UP
     end
     return previous_direction != @current_direction
   end
