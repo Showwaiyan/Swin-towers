@@ -3,19 +3,35 @@ require 'matrix'
 require_relative 'constant.rb'
 
 class Enemy
-  attr_accessor :obj, :pos, :max_hp, :speed, :path, :current_hp, :current_frame, :current_direction, :current_animation
+  attr_accessor :obj, :pos, :max_hp, :speed, :species, :path, :current_hp, :current_frame, :current_direction, :current_animation
 
   def initialize(species)
+    @species = species
     @path = PATHS.sample # Generating random path
     @pos = Vector.elements(@path.shift) # pos is a 2D vector
     @current_frame = 0
     @current_direction = RIGHT
     @current_animation = WALK
-    case species
+    case @species
       when 'orc'
         @obj = Gosu::Image.load_tiles(ORC_SPRITE+@current_direction+@current_animation+'.png', ORC_SPRITE_WIDTH, ORC_SPRITE_HEIGHT)
         @max_hp = ORC_HP
         @speed = ORC_SPEED
+        @current_hp = @max_hp
+      when 'slime'
+        @obj = Gosu::Image.load_tiles(SLIME_SPRITE+@current_direction+@current_animation+'.png', SLIME_SPRITE_WIDTH, SLIME_SPRITE_HEIGHT)
+        @max_hp = SLIME_HP
+        @speed = SLIME_SPEED
+        @current_hp = @max_hp
+      when 'hound'
+        @obj = Gosu::Image.load_tiles(HOUND_SPRITE+@current_direction+@current_animation+'.png', HOUND_SPRITE_WIDTH, HOUND_SPRITE_HEIGHT)
+        @max_hp = HOUND_HP
+        @speed = HOUND_SPEED
+        @current_hp = @max_hp
+      when 'bee'
+        @obj = Gosu::Image.load_tiles(BEE_SPRITE+@current_direction+@current_animation+'.png', BEE_SPRITE_WIDTH, BEE_SPRITE_HEIGHT)
+        @max_hp = BEE_HP
+        @speed = BEE_SPEED
         @current_hp = @max_hp
     end 
   end
@@ -59,7 +75,16 @@ class Enemy
 
   def update_sprites(direction)
     if update_direction(direction)
-      @obj = Gosu::Image.load_tiles(ORC_SPRITE+@current_direction+@current_animation+'.png', ORC_SPRITE_WIDTH, ORC_SPRITE_HEIGHT)
+      case @species
+        when 'orc'
+          @obj = Gosu::Image.load_tiles(ORC_SPRITE+@current_direction+@current_animation+'.png', ORC_SPRITE_WIDTH, ORC_SPRITE_HEIGHT)
+        when 'slime'
+          @obj = Gosu::Image.load_tiles(SLIME_SPRITE+@current_direction+@current_animation+'.png', SLIME_SPRITE_WIDTH, SLIME_SPRITE_HEIGHT)
+        when 'hound'
+          @obj = Gosu::Image.load_tiles(HOUND_SPRITE+@current_direction+@current_animation+'.png', HOUND_SPRITE_WIDTH, HOUND_SPRITE_HEIGHT)
+        when 'bee'
+          @obj = Gosu::Image.load_tiles(BEE_SPRITE+@current_direction+@current_animation+'.png', BEE_SPRITE_WIDTH, BEE_SPRITE_HEIGHT)
+      end
     end
   end
 

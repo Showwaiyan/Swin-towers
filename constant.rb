@@ -13,7 +13,10 @@ PLAYER_HP_COLOR = Gosu::Color::GREEN
 
 # Constant for sprites
 # Direction and Animation
+LEFT = 'L'
 RIGHT = 'R'
+UP = 'U'
+DOWN = 'D'
 WALK = '_Walk'
 
 # Orc
@@ -21,7 +24,28 @@ ORC_SPRITE = 'Assets/orc/'
 ORC_SPRITE_WIDTH = 48
 ORC_SPRITE_HEIGHT = 48
 ORC_HP = 20
-ORC_SPEED = 1
+ORC_SPEED = 0.5
+
+# Slime
+SLIME_SPRITE = 'Assets/slime/'
+SLIME_SPRITE_WIDTH = 48
+SLIME_SPRITE_HEIGHT = 48
+SLIME_HP = 3
+SLIME_SPEED = 0.8
+
+# Hound
+HOUND_SPRITE = 'Assets/hound/'
+HOUND_SPRITE_WIDTH = 48
+HOUND_SPRITE_HEIGHT = 48
+HOUND_HP = 10
+HOUND_SPEED = 1
+
+# Bee
+BEE_SPRITE = 'Assets/bee/'
+BEE_SPRITE_WIDTH = 48
+BEE_SPRITE_HEIGHT = 48
+BEE_HP = 5
+BEE_SPEED = 1
 
 # Path for Enemy
 PATH1 = [[0, 315], [79, 280], [185, 210], [283, 167], [367, 255], [288, 433], [208, 526], [269, 597], [365, 632], [500, 618], [625, 544], [733, 474], [835, 472], [875, 558], [915, 589], [1024, 630]]
