@@ -3,8 +3,6 @@ require 'matrix'
 require_relative 'constant.rb'
 
 class Enemy
-  attr_accessor :obj, :destory, :pos, :max_hp, :speed, :species, :path, :current_hp, :current_frame, :current_direction, :current_animation
-
   def initialize(species)
     @destory = false # destory the whole object from game
     @species = species
@@ -144,14 +142,14 @@ class Enemy
 
   # Checking if enemy can be destory
   def can_destory?
-    return destory
+    return @destory
   end
 
   # Center the enemy sprites
   def center_x(x)
-    x - (@obj[current_frame].width / 2)
+    x - (@obj[@current_frame].width / 2)
   end
   def center_y(y)
-    y - (@obj[current_frame].height / 2)
+    y - (@obj[@current_frame].height / 2)
   end
 end

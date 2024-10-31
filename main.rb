@@ -19,8 +19,6 @@ class Game < Gosu::Window
     case id
       when  Gosu::KB_ESCAPE # Instantly close the game, just for prototype version
         close
-      when Gosu::KB_SPACE
-        @enemies.each { |enemy| enemy.current_hp -= 1 }
     end
   end
 
