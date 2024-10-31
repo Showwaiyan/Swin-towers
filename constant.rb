@@ -5,11 +5,15 @@ SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
 
 FRAME_DELAY = 100
+SPAWN_DELAY = 1000 # 1000 milliseconds = 1 second
 
 HP_BAR_WIDTH = 50
 HP_BAR_HEIGHT = 5
 BAR_HP_COLOR = Gosu::Color::RED
 PLAYER_HP_COLOR = Gosu::Color::GREEN
+
+# Wave File location
+WAVE_FILE = 'Waves/wave_'
 
 # Constant for sprites
 # Direction
