@@ -12,12 +12,15 @@ BAR_HP_COLOR = Gosu::Color::RED
 PLAYER_HP_COLOR = Gosu::Color::GREEN
 
 # Constant for sprites
-# Direction and Animation
+# Direction
 LEFT = 'L'
 RIGHT = 'R'
 UP = 'U'
 DOWN = 'D'
+
+# Action
 WALK = '_Walk'
+DEATH = '_Death'
 
 # Orc
 ORC_SPRITE = 'Assets/orc/'
@@ -44,7 +47,7 @@ HOUND_SPEED = 1
 BEE_SPRITE = 'Assets/bee/'
 BEE_SPRITE_WIDTH = 48
 BEE_SPRITE_HEIGHT = 48
-BEE_HP = 5
+BEE_HP = 8
 BEE_SPEED = 1
 
 # Path for Enemy

@@ -12,19 +12,22 @@ class Game < Gosu::Window
     super(SCREEN_WIDTH, SCREEN_HEIGHT)
     self.caption = 'Swin Towers'
     @bg = Gosu::Image.new('Assets/map/map.png')
+    @enemies = [Enemy.new('bee')]
   end
   
   def button_down(id)
     case id
       when  Gosu::KB_ESCAPE # Instantly close the game, just for prototype version
         close
+      when Gosu::KB_SPACE
+        @enemies.each { |enemy| enemy.current_hp -= 1 }
     end
   end
 
   def update
     @enemies.compact!
     @enemies.each { |enemy| enemy.update }
-    @enemies.delete_if { |enemy| enemy.check_path_end }
+    @enemies.delete_if { |enemy| enemy.check_path_end? || enemy.can_destory? }
   end
 
   def draw

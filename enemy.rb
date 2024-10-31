@@ -3,7 +3,7 @@ require 'matrix'
 require_relative 'constant.rb'
 
 class Enemy
-  attr_accessor :obj, :destory :pos, :max_hp, :speed, :species, :path, :current_hp, :current_frame, :current_direction, :current_animation
+  attr_accessor :obj, :destory, :pos, :max_hp, :speed, :species, :path, :current_hp, :current_frame, :current_direction, :current_animation
 
   def initialize(species)
     @destory = false # destory the whole object from game
@@ -41,7 +41,7 @@ class Enemy
     unless is_death?
       self.move
     else 
-      self.desotry
+      self.desotry_enemy
     end
   end
 
@@ -61,7 +61,7 @@ class Enemy
     @pos += direction
 
     # Change direction and animation if needed
-    update_sprites(direction)
+    update_sprites if update_direction(direction)
 
     # Update the frame
     update_frame
@@ -75,21 +75,20 @@ class Enemy
   end
 
   def update_frame
+    @current_frame = @obj.size - 1 - (Gosu.milliseconds / FRAME_DELAY) % @obj.size if is_death? && @current_direction == RIGHT
     @current_frame = (Gosu::milliseconds / FRAME_DELAY) % @obj.size
   end
 
-  def update_sprites(direction)
-    if update_direction(direction)
-      case @species
-        when 'orc'
-          @obj = Gosu::Image.load_tiles(ORC_SPRITE+@current_direction+@current_animation+'.png', ORC_SPRITE_WIDTH, ORC_SPRITE_HEIGHT)
-        when 'slime'
-          @obj = Gosu::Image.load_tiles(SLIME_SPRITE+@current_direction+@current_animation+'.png', SLIME_SPRITE_WIDTH, SLIME_SPRITE_HEIGHT)
-        when 'hound'
-          @obj = Gosu::Image.load_tiles(HOUND_SPRITE+@current_direction+@current_animation+'.png', HOUND_SPRITE_WIDTH, HOUND_SPRITE_HEIGHT)
-        when 'bee'
-          @obj = Gosu::Image.load_tiles(BEE_SPRITE+@current_direction+@current_animation+'.png', BEE_SPRITE_WIDTH, BEE_SPRITE_HEIGHT)
-      end
+  def update_sprites
+    case @species
+      when 'orc'
+        @obj = Gosu::Image.load_tiles(ORC_SPRITE+@current_direction+@current_animation+'.png', ORC_SPRITE_WIDTH, ORC_SPRITE_HEIGHT)
+      when 'slime'
+        @obj = Gosu::Image.load_tiles(SLIME_SPRITE+@current_direction+@current_animation+'.png', SLIME_SPRITE_WIDTH, SLIME_SPRITE_HEIGHT)
+      when 'hound'
+        @obj = Gosu::Image.load_tiles(HOUND_SPRITE+@current_direction+@current_animation+'.png', HOUND_SPRITE_WIDTH, HOUND_SPRITE_HEIGHT)
+      when 'bee'
+        @obj = Gosu::Image.load_tiles(BEE_SPRITE+@current_direction+@current_animation+'.png', BEE_SPRITE_WIDTH, BEE_SPRITE_HEIGHT)
     end
   end
 
@@ -109,7 +108,7 @@ class Enemy
   end
 
   def diaplay_health_bar
-    hp_bar_pos = [@pos[0]-ORC_SPRITE_WIDTH/2,@pos[1]-ORC_SPRITE_HEIGHT/2+5] # 5 is the offset
+    hp_bar_pos = [@pos[0]-ORC_SPRITE_WIDTH/2,@pos[1]-ORC_SPRITE_HEIGHT/2+10] # 10 is the offset
     Gosu::draw_rect(hp_bar_pos[0], hp_bar_pos[1], HP_BAR_WIDTH, HP_BAR_HEIGHT, BAR_HP_COLOR)
     Gosu::draw_rect(hp_bar_pos[0], hp_bar_pos[1], calculate_current_hp_bar_width, HP_BAR_HEIGHT, PLAYER_HP_COLOR)
   end
@@ -119,8 +118,9 @@ class Enemy
     return 0
   end
 
+  # Checking death
   def is_death?
-    #passed
+    return @current_hp <= 0
   end
 
   # Checking if enemy reach the end of the path
@@ -128,8 +128,23 @@ class Enemy
     return @path.empty?
   end
 
-  def desotry
-    # death animation
+  def desotry_enemy
+    if @current_animation != DEATH
+      @current_animation = DEATH
+      @current_frame = 0 if @current_direction != RIGHT
+      @current_frame = @obj.size-1 if @current_direction == RIGHT # due to right death animation is in reverse
+      update_sprites
+    end
+    update_frame
+    if (@current_frame == 0 && @current_direction == RIGHT) || (@current_frame == @obj.size-1 && @current_direction != RIGHT)
+      # to check if the death animation is finished
+      @destory = true
+    end
+  end
+
+  # Checking if enemy can be destory
+  def can_destory?
+    return destory
   end
 
   # Center the enemy sprites
