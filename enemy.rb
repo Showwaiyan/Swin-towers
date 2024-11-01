@@ -44,7 +44,7 @@ class Enemy
   end
 
   def draw 
-    @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), ZOrder::CHAR)
+    @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), ZOrder::ENEMY)
     self.diaplay_health_bar if !is_death?
   end
 

@@ -4,7 +4,7 @@ require_relative 'constant.rb'
 require_relative 'enemy.rb'
 
 module ZOrder
-  BACKGROUND, OBJECT, CHAR, UI = *0..3
+  BACKGROUND, OBJECT, TOWER_UP, ENEMY, TOWER_DOWN, UI = *0..5
 end
 
 class Game < Gosu::Window
@@ -48,7 +48,6 @@ class Game < Gosu::Window
   end
 
   def update_wave
-    p 'Update Wave'
     @current_wave += 1
     @wave_file = File.open(WAVE_FILE + @current_wave.to_s + '.txt', 'r')
   end
