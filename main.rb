@@ -22,7 +22,8 @@ class Game < Gosu::Window
 
     # Tower
     @towers = []
-    @is_tower_overlay = false
+    @is_tower_overlay = false # indicate that tower is just overlay
+    @can_create_tower = false # indicate that tower is actually built, not just overlay
   end
   
   def button_down(id)
@@ -32,6 +33,8 @@ class Game < Gosu::Window
       # Testing
       when Gosu::KB_SPACE
         @is_tower_overlay = !@is_tower_overlay
+      when Gosu::MS_LEFT
+        @can_create_tower = true
     end
   end
 
@@ -50,10 +53,11 @@ class Game < Gosu::Window
 
   def draw
     @bg.draw(0, 0, ZOrder::BACKGROUND)
+    @towers.each { |tower| tower.draw }
     @enemies.each { |enemy| enemy.draw }
 
     # Draw Tower Overlay for visualizing the tower placement
-    create_tower(mouse_x,mouse_y) if @is_tower_overlay
+    draw_sample_tower(mouse_x,mouse_y) if @is_tower_overlay
   end
 
   def spawn_enemy
@@ -69,10 +73,56 @@ class Game < Gosu::Window
     @wave_file = File.open(WAVE_FILE + @current_wave.to_s + '.txt', 'r')
   end
 
-  def create_tower(mouse_x, mouse_y)
+  def draw_sample_tower(mouse_x, mouse_y)
     tower = Tower.new
-    tower.draw_overlay(mouse_x, mouse_y)
+    if check_tower_placeable(tower, mouse_x, mouse_y) && @can_create_tower
+      @towers << tower
+      @create_tower = false
+      @is_tower_overlay = false
+    else
+      # not to create tower even if the mouse is clicked
+      # if not, the tower will automatically be created when it reach the valid area
+      @can_create_tower = false
+    end
   end
+
+  def check_tower_placeable(tower, mouse_x, mouse_y)
+
+    color = Gosu::Color.rgba(255, 0, 0, 128) # defualt color is red for invalid placement
+    valid = false
+
+    TOWER_CENTER.each do |center|
+      center_x = center[0]
+      center_y = center[1]
+      leftX = center_x - TOWER_SPRITE_WIDTH / 2
+      topY = center_y - TOWER_SPRITE_HEIGHT / 4
+      rightX = center_x + TOWER_SPRITE_WIDTH / 2
+      bottomY = center_y + TOWER_SPRITE_HEIGHT / 4
+
+      # Check if the cursor is in the valid area
+      if is_cursor_in_area?(leftX, topY, rightX, bottomY, mouse_x, mouse_y)
+        # the mosue cursor is in the valid area
+        mouse_x = center_x
+        mouse_y = center_y
+        tower.update_pos(center_x, center_y)
+        tower.update_ZOrder(center_x, center_y)
+        color = Gosu::Color.rgba(0, 255, 0, 128)
+        valid = true
+        break
+      end
+    end
+
+    tower.draw_overlay(mouse_x, mouse_y, color)
+    return valid
+  end
+
+  def is_cursor_in_area?(leftX, topY, rightX, bottomY, mouse_x, mouse_y)
+    if mouse_x > leftX && mouse_x < rightX && mouse_y > topY && mouse_y < bottomY
+     return true
+    else
+     return false
+    end
+ end
 end
 
 Game.new.show
