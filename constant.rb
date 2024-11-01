@@ -16,6 +16,14 @@ PLAYER_HP_COLOR = Gosu::Color::GREEN
 WAVE_FILE = 'Waves/wave_'
 
 # Constant for sprites
+# Tower
+TOWER_SPRITE = 'Assets/tower/'
+TOWER_SPRITE_WIDTH = 70
+TOWER_SPRITE_HEIGHT = 130
+
+#animation
+IDEL = 'Idel'
+
 # Direction
 LEFT = 'L'
 RIGHT = 'R'
