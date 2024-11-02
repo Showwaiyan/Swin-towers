@@ -16,6 +16,14 @@ class Tower
     # tower on the down side of path will be upabove layer on enemy
     # tower on the up side of path will be downbelow layer on enemy
     @order = nil
+
+    # Archer
+    @current_archer_frame = 0
+    @current_archer_animation = IDEL
+    @current_archer_level = 1
+    @current_archer_direction = LEFT
+    @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
+    @archer_pos = []
   end
 
   def update
@@ -24,7 +32,14 @@ class Tower
   end
 
   def draw
-    @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), @order) if !@pos.empty?
+    self.draw_archer_tower
+  end
+
+  def draw_archer_tower
+    if !@pos.empty?
+      @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), @order) # for tower
+      @archer_obj[@current_archer_frame].draw(center_x(@archer_pos[0], true), center_y(@archer_pos[1], true), ZOrder::ARCHER) # for archer
+    end
   end
 
   def update_ZOrder(x,y)
@@ -63,13 +78,25 @@ class Tower
   def update_pos(x, y)
     @pos[0] = x
     @pos[1] = y
+    @archer_pos[0] = x
+    @archer_pos[1] = y
   end
 
   # center the tower image
-  def center_x(x)
-    x - (@obj[@current_frame].width / 2)
+  # flag is used to know whether the image is tower or archer
+  # because tower and archer have different height and amount of frame
+  def center_x(x, flag = false)
+    if flag
+      x - (@archer_obj[@current_archer_frame].width / 2)
+    else
+      x - (@obj[@current_frame].width / 2)
+    end
   end
-  def center_y(y)
-    y - (@obj[@current_frame].height - @obj[@current_frame].height / 4)
+  def center_y(y, flag = false)
+    if flag
+      y - (@archer_obj[@current_archer_frame].height / 2)
+    else
+      y - (@obj[@current_frame].height - @obj[@current_frame].height / 4)
+    end
   end
 end

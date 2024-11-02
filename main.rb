@@ -5,7 +5,7 @@ require_relative 'enemy.rb'
 require_relative 'tower.rb'
 
 module ZOrder
-  BACKGROUND, OBJECT, TOWER_UP, ENEMY, TOWER_DOWN, UI = *0..5
+  BACKGROUND, OBJECT, TOWER_UP, ENEMY, TOWER_DOWN, ARCHER, UI = *0..6
 end
 
 class Game < Gosu::Window
