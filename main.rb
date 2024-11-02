@@ -77,6 +77,7 @@ class Game < Gosu::Window
     tower = Tower.new
     if check_tower_placeable(tower, mouse_x, mouse_y) && @can_create_tower
       @towers << tower
+      TOWER_CENTER.delete([tower.get_pos_x, tower.get_pos_y])
       @create_tower = false
       @is_tower_overlay = false
     else

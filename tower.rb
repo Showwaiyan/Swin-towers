@@ -82,6 +82,15 @@ class Tower
     @archer_pos[1] = y
   end
 
+  # getter for tower position
+  def get_pos_x
+    return @pos[0]
+  end
+  def get_pos_y
+    return @pos[1]
+  end
+
+
   # center the tower image
   # flag is used to know whether the image is tower or archer
   # because tower and archer have different height and amount of frame
