@@ -30,11 +30,6 @@ class Game < Gosu::Window
     case id
       when  Gosu::KB_ESCAPE # Instantly close the game, just for prototype version
         close
-      # Testing
-      when Gosu::KB_SPACE
-        @is_tower_overlay = !@is_tower_overlay
-      when Gosu::MS_LEFT
-        @can_create_tower = true
     end
   end
 
