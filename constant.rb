@@ -21,9 +21,6 @@ TOWER_SPRITE = 'Assets/tower/'
 TOWER_SPRITE_WIDTH = 70
 TOWER_SPRITE_HEIGHT = 130
 
-#animation
-IDEL = 'Idel'
-
 # Direction
 LEFT = 'L'
 RIGHT = 'R'
@@ -33,6 +30,7 @@ DOWN = 'D'
 # Action
 WALK = '_Walk'
 DEATH = '_Death'
+IDEL = '_Idel'
 
 # Orc
 ORC_SPRITE = 'Assets/orc/'
