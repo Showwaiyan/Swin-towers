@@ -41,7 +41,6 @@ class UI
 
   def clicked?(mouse_x, mouse_y)
     if mouse_x > @x && mouse_x < @x + @width && mouse_y > @y && mouse_y < @y + @height
-      p 'clicked'
       return true
     else
       return false

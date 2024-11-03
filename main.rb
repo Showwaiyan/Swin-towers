@@ -25,6 +25,7 @@ class Game < Gosu::Window
     @towers = []
     @is_tower_overlay = false # indicate that tower is just overlay
     @can_create_tower = false # indicate that tower is actually built, not just overlay
+    @overlay_tower = nil
 
     # UI
     @in_game_ui = [UI.new(TOWER_CREATE_BTN)]
@@ -35,21 +36,42 @@ class Game < Gosu::Window
       when  Gosu::KB_ESCAPE # Instantly close the game, just for prototype version
         close
       when Gosu::MS_LEFT
+        # tower selected check
+        @towers.each do |tower|
+          if tower.is_clicked?(mouse_x, mouse_y) && @is_tower_overlay == false
+            @towers.each { |tower| tower.de_select_tower } # make to select only one at a time
+            tower.select_tower
+          end
+        end
+
+        # tower creating
+        if @is_tower_overlay
+          # if tower is overlay, then left click will create the tower
+          if @can_create_tower
+            create_tower
+            @is_tower_overlay = false
+            @can_create_tower = false
+          else
+            # if tower is not in valid place, then left click will cancel the tower overlay
+            @is_tower_overlay = false
+          end
+        end
+
+        # in game button click event
         @in_game_ui.each do |btn|
           if btn.clicked?(mouse_x, mouse_y)
             case btn.get_ui_type
               when 'tower_create_button'
+                return if TOWER_CENTER.empty? # if there is no place to build the tower
                 # Show tower overlay 
                 @is_tower_overlay = true
+                # @not_placeable_tower = false
             end
           end
         end
         
-        # tower creating
-        if @is_tower_overlay
-          # if tower is overlay, then left click will create the tower
-          @can_create_tower = true
-        end
+
+
     end
   end
 
@@ -94,23 +116,18 @@ class Game < Gosu::Window
   end
 
   def draw_sample_tower(mouse_x, mouse_y)
-    tower = Tower.new
-    if check_tower_placeable(tower, mouse_x, mouse_y) && @can_create_tower
-      @towers << tower
-      TOWER_CENTER.delete([tower.get_pos_x, tower.get_pos_y])
-      @create_tower = false
-      @is_tower_overlay = false
+    @overlay_tower = Tower.new
+
+    if is_tower_placeable(mouse_x, mouse_y)
+      color = Gosu::Color.rgba(0, 255, 0, 128) # valid color is green
     else
-      # not to create tower even if the mouse is clicked
-      # if not, the tower will automatically be created when it reach the valid area
-      @can_create_tower = false
+      color = Gosu::Color.rgba(255, 0, 0, 128) # invalid color is red
     end
+
+    @overlay_tower.draw_overlay(@overlay_tower.get_pos_x, @overlay_tower.get_pos_y, color)
   end
 
-  def check_tower_placeable(tower, mouse_x, mouse_y)
-
-    color = Gosu::Color.rgba(255, 0, 0, 128) # defualt color is red for invalid placement
-    valid = false
+  def is_tower_placeable(mouse_x, mouse_y)
 
     TOWER_CENTER.each do |center|
       center_x = center[0]
@@ -125,16 +142,24 @@ class Game < Gosu::Window
         # the mosue cursor is in the valid area
         mouse_x = center_x
         mouse_y = center_y
-        tower.update_pos(center_x, center_y)
-        tower.update_ZOrder(center_x, center_y)
-        color = Gosu::Color.rgba(0, 255, 0, 128)
-        valid = true
+        @overlay_tower.update_pos(center_x, center_y)
+        @overlay_tower.update_ZOrder(center_x, center_y)
+        @can_create_tower = true
+        return true
         break
+      else
+        @overlay_tower.update_pos(mouse_x, mouse_y)
       end
     end
 
-    tower.draw_overlay(mouse_x, mouse_y, color)
-    return valid
+    @can_create_tower = false
+    return false
+  end
+
+  def create_tower
+    @towers << @overlay_tower
+    TOWER_CENTER.delete([@overlay_tower.get_pos_x, @overlay_tower.get_pos_y]) 
+    @overlay_tower = nil
   end
 
   def is_cursor_in_area?(leftX, topY, rightX, bottomY, mouse_x, mouse_y)

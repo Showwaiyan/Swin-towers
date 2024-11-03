@@ -17,6 +17,9 @@ class Tower
     # tower on the up side of path will be downbelow layer on enemy
     @order = nil
 
+    # highligt flag for tower
+    @highlight = false
+
     # Archer
     @current_archer_frame = 0
     @current_archer_animation = IDEL
@@ -33,6 +36,7 @@ class Tower
 
   def draw
     self.draw_archer_tower
+    draw_circle(@pos[0], @pos[1], @obj[0].width/2, Gosu::Color::rgba(255,255,0,128), ZOrder::OBJECT) if @highlight
   end
 
   def draw_archer_tower
@@ -90,6 +94,33 @@ class Tower
     return @pos[1]
   end
 
+  def is_clicked?(mouse_x, mouse_y)
+    leftX = @pos[0] - TOWER_SPRITE_WIDTH / 2
+    topY = @pos[1] - TOWER_SPRITE_HEIGHT / 4
+    rightX = @pos[0] + TOWER_SPRITE_WIDTH / 2
+    bottomY = @pos[1] + TOWER_SPRITE_HEIGHT / 4
+    if is_clicked_in_area?(leftX, topY, rightX, bottomY, mouse_x, mouse_y)
+      return true
+    else
+      return false
+    end
+  end
+
+  def select_tower
+    @highlight = true
+  end
+
+  def de_select_tower
+    @highlight = false
+  end
+
+  def is_clicked_in_area?(leftX, topY, rightX, bottomY, mouse_x, mouse_y)
+    if mouse_x > leftX && mouse_x < rightX && mouse_y > topY && mouse_y < bottomY
+      return true
+    else
+      return false
+    end
+  end
 
   # center the tower image
   # flag is used to know whether the image is tower or archer
