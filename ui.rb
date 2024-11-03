@@ -2,15 +2,15 @@ require 'gosu'
 require_relative 'constant.rb'
 
 class UI
-  def initialize(ui_type, x, y, width, height, border_color = Gosu::Color.rgba(255, 255, 255, 225), bg_color = Gosu::COLOR::BLACK, path = nil)
-    @ui_type = ui_type # string of ui type which indicates to draw the specific page ui elements
-    @img = Gosu::Image.new(path) if not path.nil?
-    @x = x
-    @y = y
-    @width = width
-    @height = height
-    @border_color = border_color
-    @bg_color = bg_color
+  def initialize(button)
+    @ui_type = button[0] # string of ui type which indicates to draw the specific page ui elements
+    @x = button[1]
+    @y = button[2]
+    @width = button[3]
+    @height = button[4]
+    @border_color = button[5]
+    @bg_color = button[6]
+    @img = Gosu::Image.new(button[7]) if not button[7].nil?
   end
 
   def update

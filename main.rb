@@ -27,12 +27,7 @@ class Game < Gosu::Window
     @can_create_tower = false # indicate that tower is actually built, not just overlay
 
     # UI
-    @in_game_ui = [
-    UI.new('tower_box_button',TOWER_CREAT_BTN_X, TOWER_CREAT_BTN_Y, 
-                              TOEWR_CREAT_BTN_WIDTH, TOWER_CREAT_BTN_HEIGHT,
-                              TOWER_CREAT_BORDER_COLOR, TOWER_CREAT_BTN_BG, 
-                              TOWER_CREATE_BTN_IMG)
-    ]
+    @in_game_ui = [UI.new(TOWER_CREATE_BTN)]
   end
   
   def button_down(id)
@@ -43,7 +38,7 @@ class Game < Gosu::Window
         @in_game_ui.each do |btn|
           if btn.clicked?(mouse_x, mouse_y)
             case btn.get_ui_type
-              when 'tower_box_button'
+              when 'tower_create_button'
                 # Show tower overlay 
                 @is_tower_overlay = true
             end
