@@ -27,10 +27,12 @@ class Game < Gosu::Window
     @can_create_tower = false # indicate that tower is actually built, not just overlay
 
     # UI
-    @current_game_page = 'in_game'
-
-    #Buttons
-    @tower_box_button = UI.new('tower_box_button')
+    @in_game_ui = [
+    UI.new('tower_box_button',TOWER_CREAT_BTN_X, TOWER_CREAT_BTN_Y, 
+                              TOEWR_CREAT_BTN_WIDTH, TOWER_CREAT_BTN_HEIGHT,
+                              TOWER_CREAT_BORDER_COLOR, TOWER_CREAT_BTN_BG, 
+                              TOWER_CREATE_BTN_IMG)
+    ]
   end
   
   def button_down(id)
@@ -38,9 +40,14 @@ class Game < Gosu::Window
       when  Gosu::KB_ESCAPE # Instantly close the game, just for prototype version
         close
       when Gosu::MS_LEFT
-        if @tower_box_button.clicked?(mouse_x, mouse_y)
-          # to show tower overlay
-          @is_tower_overlay = true
+        @in_game_ui.each do |btn|
+          if btn.clicked?(mouse_x, mouse_y)
+            case btn.get_ui_type
+              when 'tower_box_button'
+                # Show tower overlay 
+                @is_tower_overlay = true
+            end
+          end
         end
         
         # tower creating
@@ -68,10 +75,7 @@ class Game < Gosu::Window
 
   def draw
     # Draw UI
-    case @current_game_page
-      when 'in_game'
-        @tower_box_button.draw if !TOWER_CENTER.empty?
-    end
+    @in_game_ui.each { |btn| btn.draw }
 
     @bg.draw(0, 0, ZOrder::BACKGROUND)
     @towers.each { |tower| tower.draw }

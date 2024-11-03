@@ -16,13 +16,14 @@ PLAYER_HP_COLOR = Gosu::Color::GREEN
 WAVE_FILE = 'Waves/wave_'
 
 # UI
-# Tower Select button
-TOEWR_BOX_WIDTH = 70
-TOWER_BOX_HEIGHT = 70
-TOWER_BOX_X = 29
-TOWER_BOX_Y = 662
-TOWER_BOX_BORDER_COLOR = Gosu::Color::BLACK
-TOWER_BOX_BG = Gosu::Color.rgba(255, 255, 255, 225)
+# Tower Create button
+TOWER_CREATE_BTN_IMG = 'Assets/tower/1/_Idel.png'
+TOEWR_CREAT_BTN_WIDTH = 70
+TOWER_CREAT_BTN_HEIGHT = 70
+TOWER_CREAT_BTN_X = 29
+TOWER_CREAT_BTN_Y = 662
+TOWER_CREAT_BORDER_COLOR = Gosu::Color::BLACK
+TOWER_CREAT_BTN_BG = Gosu::Color.rgba(255, 255, 255, 225)
 
 # Constant for sprites
 # Tower

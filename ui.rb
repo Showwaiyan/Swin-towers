@@ -2,55 +2,44 @@ require 'gosu'
 require_relative 'constant.rb'
 
 class UI
-  def initialize(ui)
-    @ui_type = ui # string of ui type which indicates to draw the specific page ui elements
-    case @ui_type
-      when 'tower_box_button'
-        @tower_img = Gosu::Image.new(TOWER_SPRITE + '1/_Idel.png')
-        @x = TOWER_BOX_X
-        @y = TOWER_BOX_Y
-        @width = TOEWR_BOX_WIDTH
-        @height = TOWER_BOX_HEIGHT
-    end
+  def initialize(ui_type, x, y, width, height, border_color = Gosu::Color.rgba(255, 255, 255, 225), bg_color = Gosu::COLOR::BLACK, path = nil)
+    @ui_type = ui_type # string of ui type which indicates to draw the specific page ui elements
+    @img = Gosu::Image.new(path) if not path.nil?
+    @x = x
+    @y = y
+    @width = width
+    @height = height
+    @border_color = border_color
+    @bg_color = bg_color
   end
 
   def update
-    
+    #passed
   end
 
   def draw
-    self.draw_ui_elements(@ui_type)
+    self.draw_button
   end
 
-  def  draw_ui_elements(ui) 
-    case ui
-      when 'tower_box_button'
-        draw_tower_box
-    end
-  end
-
-  def draw_tower_box
+  def draw_button
     # draw tower box border (border line)
-    Gosu.draw_line(@x, @y, TOWER_BOX_BORDER_COLOR, @x + @width, @y, TOWER_BOX_BORDER_COLOR, ZOrder::UI1)               # Top
-    Gosu.draw_line(@x, @y + @height, TOWER_BOX_BORDER_COLOR, @x + @width, @y + @height, TOWER_BOX_BORDER_COLOR, ZOrder::UI1) # Bottom
-    Gosu.draw_line(@x, @y, TOWER_BOX_BORDER_COLOR, @x, @y + @height, TOWER_BOX_BORDER_COLOR, ZOrder::UI1)              # Left
-    Gosu.draw_line(@x + @width, @y, TOWER_BOX_BORDER_COLOR, @x + @width, @y + @height, TOWER_BOX_BORDER_COLOR, ZOrder::UI1) # Right
+    Gosu.draw_line(@x, @y, @border_color, @x + @width, @y, @border_color, ZOrder::UI1)               # Top
+    Gosu.draw_line(@x, @y + @height, @border_color, @x + @width, @y + @height, @border_color, ZOrder::UI1) # Bottom
+    Gosu.draw_line(@x, @y, @border_color, @x, @y + @height, @border_color, ZOrder::UI1)              # Left
+    Gosu.draw_line(@x + @width, @y, @border_color, @x + @width, @y + @height, @border_color, ZOrder::UI1) # Right
 
-    # draw tower box background
-    Gosu.draw_rect(@x, @y, @width, @height, TOWER_BOX_BG, ZOrder::UI0)
+    # draw background
+    Gosu.draw_rect(@x, @y, @width, @height, @bg_color, ZOrder::UI0)
 
-    # draw tower image
-    @tower_img.draw(@x, @y-(@tower_img.height/2), ZOrder::UI1)
+    # draw image
+    @img.draw(@x, @y-(@img.height/2), ZOrder::UI1) if not @img.nil? && @img.height >= 130 # indicating that the image is tower
+  end
+
+  def get_ui_type
+    return @ui_type
   end
 
   def clicked?(mouse_x, mouse_y)
-    case @ui_type
-      when 'tower_box_button'
-        cursor_insde_area(mouse_x, mouse_y)
-    end
-  end
-
-  def cursor_insde_area(mouse_x, mouse_y)
     if mouse_x > @x && mouse_x < @x + @width && mouse_y > @y && mouse_y < @y + @height
       p 'clicked'
       return true
