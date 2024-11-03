@@ -110,8 +110,12 @@ class Tower
     @highlight = true
   end
 
-  def de_select_tower
+  def unselect_tower
     @highlight = false
+  end
+
+  def is_selected?
+    return @highlight
   end
 
   def is_clicked_in_area?(leftX, topY, rightX, bottomY, mouse_x, mouse_y)

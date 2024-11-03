@@ -39,7 +39,7 @@ class Game < Gosu::Window
         # tower selected check
         @towers.each do |tower|
           if tower.is_clicked?(mouse_x, mouse_y) && @is_tower_overlay == false
-            @towers.each { |tower| tower.de_select_tower } # make to select only one at a time
+            @towers.each { |tower| tower.unselect_tower } # make to select only one at a time
             tower.select_tower
           end
         end
