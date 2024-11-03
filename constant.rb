@@ -15,6 +15,15 @@ PLAYER_HP_COLOR = Gosu::Color::GREEN
 # Wave File location
 WAVE_FILE = 'Waves/wave_'
 
+# UI
+# Tower Select button
+TOEWR_BOX_WIDTH = 70
+TOWER_BOX_HEIGHT = 70
+TOWER_BOX_X = 29
+TOWER_BOX_Y = 662
+TOWER_BOX_BORDER_COLOR = Gosu::Color::BLACK
+TOWER_BOX_BG = Gosu::Color.rgba(255, 255, 255, 225)
+
 # Constant for sprites
 # Tower
 TOWER_SPRITE = 'Assets/tower/'

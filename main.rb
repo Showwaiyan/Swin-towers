@@ -3,9 +3,10 @@ require 'matrix'
 require_relative 'constant.rb'
 require_relative 'enemy.rb'
 require_relative 'tower.rb'
+require_relative 'ui.rb'
 
 module ZOrder
-  BACKGROUND, OBJECT, TOWER_UP, ENEMY, TOWER_DOWN, ARCHER, UI = *0..6
+  BACKGROUND, OBJECT, TOWER_UP, ENEMY, TOWER_DOWN, ARCHER, UI0, UI1 = *0..7
 end
 
 class Game < Gosu::Window
@@ -24,12 +25,29 @@ class Game < Gosu::Window
     @towers = []
     @is_tower_overlay = false # indicate that tower is just overlay
     @can_create_tower = false # indicate that tower is actually built, not just overlay
+
+    # UI
+    @current_game_page = 'in_game'
+
+    #Buttons
+    @tower_box_button = UI.new('tower_box_button')
   end
   
   def button_down(id)
     case id
       when  Gosu::KB_ESCAPE # Instantly close the game, just for prototype version
         close
+      when Gosu::MS_LEFT
+        if @tower_box_button.clicked?(mouse_x, mouse_y)
+          # to show tower overlay
+          @is_tower_overlay = true
+        end
+        
+        # tower creating
+        if @is_tower_overlay
+          # if tower is overlay, then left click will create the tower
+          @can_create_tower = true
+        end
     end
   end
 
@@ -44,9 +62,17 @@ class Game < Gosu::Window
     # Update wave if all enemies are spawned and cleared from the map
     # follwoing code will be commented until the official wave files are created
     # update_wave if @wave_file.eof? && @enemies.empty? 
+
+    # UI
   end
 
   def draw
+    # Draw UI
+    case @current_game_page
+      when 'in_game'
+        @tower_box_button.draw if !TOWER_CENTER.empty?
+    end
+
     @bg.draw(0, 0, ZOrder::BACKGROUND)
     @towers.each { |tower| tower.draw }
     @enemies.each { |enemy| enemy.draw }

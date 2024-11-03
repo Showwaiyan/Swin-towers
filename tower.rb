@@ -55,8 +55,8 @@ class Tower
   end
 
   def draw_overlay(mouse_x, mouse_y, color)
-    @obj[0].draw(center_x(mouse_x), center_y(mouse_y), ZOrder::UI)
-    draw_circle(mouse_x, mouse_y, @obj[0].width/2, color, ZOrder::UI)
+    @obj[0].draw(center_x(mouse_x), center_y(mouse_y), ZOrder::UI1)
+    draw_circle(mouse_x, mouse_y, @obj[0].width/2, color, ZOrder::UI1)
   end
 
   def draw_circle(x, y, radius, color, z = 0, steps = 30)
