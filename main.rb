@@ -59,8 +59,8 @@ class Game < Gosu::Window
                 # Show tower overlay 
                 @is_tower_overlay = true
               when 'tower_upgrade_button'
-                # tower = @towers.find { |tower| tower.is_selected? }
-                # tower.upgrade if !tower.nil?
+                tower = @towers.find { |tower| tower.is_selected? }
+                tower.upgrade if !tower.nil?
             end
           end
         end
@@ -70,9 +70,6 @@ class Game < Gosu::Window
           if tower.is_clicked?(mouse_x, mouse_y) && @is_tower_overlay == false
             @towers.each { |tower| tower.unselect_tower } # make to select only one at a time
             tower.select_tower
-
-            # if tower is selected, then upgrade button will be shown
-
           else 
             tower.unselect_tower
           end
@@ -81,6 +78,7 @@ class Game < Gosu::Window
   end
 
   def update
+    # Enemy
     # following code will be uncommented until the official wave files are created
     # spawn_enemy
 
@@ -91,6 +89,9 @@ class Game < Gosu::Window
     # Update wave if all enemies are spawned and cleared from the map
     # follwoing code will be commented until the official wave files are created
     # update_wave if @wave_file.eof? && @enemies.empty? 
+
+    # Tower
+    @towers.each { |tower| tower.update }
 
     # UI
   end

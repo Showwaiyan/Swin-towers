@@ -20,6 +20,9 @@ class Tower
     # highligt flag for tower
     @highlight = false
 
+    # tower upgrading
+    @upgrade = false
+
     # Archer
     @current_archer_frame = 0
     @current_archer_animation = IDEL
@@ -27,11 +30,15 @@ class Tower
     @current_archer_direction = LEFT
     @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
     @archer_pos = []
+    @archer_order = ZOrder::ARCHER
   end
 
   def update
-    #passed
-    self.update_frame
+    unless is_upgrading?
+      self.update_frame
+    else 
+      self.upgrade_frame
+    end
   end
 
   def draw
@@ -42,8 +49,41 @@ class Tower
   def draw_archer_tower
     if !@pos.empty?
       @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), @order) # for tower
-      @archer_obj[@current_archer_frame].draw(center_x(@archer_pos[0], true), center_y(@archer_pos[1], true), ZOrder::ARCHER) # for archer
+      @archer_obj[@current_archer_frame].draw(center_x(@archer_pos[0], true), center_y(@archer_pos[1], true), @archer_order) # for archer
     end
+  end
+
+  def upgrade
+    return if @current_level == 2
+    @upgrade = true
+    # For Tower
+    previous_level = @current_level
+    @current_level += 1
+    @current_frame = 0
+    @obj = Gosu::Image.load_tiles(TOWER_SPRITE+'upgrade/'+previous_level.to_s+'_'+@current_level.to_s+'.png', TOWER_SPRITE_WIDTH, TOWER_SPRITE_HEIGHT)
+
+    # For Archer
+    @archer_order = ZOrder::BACKGROUND # to make the archer disppear when the tower is upgrading
+    update_archer_pos
+    # passed
+  end
+
+  def is_upgrading?
+    return @upgrade
+  end
+
+  def upgrade_frame
+    if @current_frame == @obj.size-1  
+      @upgrade = false
+
+      # For Tower
+      @obj = Gosu::Image.load_tiles(TOWER_SPRITE+@current_level.to_s+'/'+@current_animation+'.png', TOWER_SPRITE_WIDTH, TOWER_SPRITE_HEIGHT) 
+      @current_frame = 0
+
+      # For Archer
+      @archer_order = ZOrder::ARCHER
+    end 
+    update_frame
   end
 
   def update_ZOrder(x,y)
@@ -52,6 +92,10 @@ class Tower
     else
       @order = ZOrder::TOWER_UP
     end
+  end
+
+  def update_archer_pos
+    @archer_pos[1] -= 15
   end
 
   def update_frame
