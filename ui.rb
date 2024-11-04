@@ -22,11 +22,11 @@ class UI
   end
 
   def draw_button
-    # draw tower box border (border line)
-    Gosu.draw_line(@x, @y, @border_color, @x + @width, @y, @border_color, ZOrder::UI1)               # Top
-    Gosu.draw_line(@x, @y + @height, @border_color, @x + @width, @y + @height, @border_color, ZOrder::UI1) # Bottom
-    Gosu.draw_line(@x, @y, @border_color, @x, @y + @height, @border_color, ZOrder::UI1)              # Left
-    Gosu.draw_line(@x + @width, @y, @border_color, @x + @width, @y + @height, @border_color, ZOrder::UI1) # Right
+    # draw border (border line)
+    draw_thick_line(@x, @y, @x + @width, @y, @border_color, 5)
+    draw_thick_line(@x, @y + @height, @x + @width, @y + @height, @border_color, 5)
+    draw_thick_line(@x, @y, @x, @y + @height, @border_color, 5)
+    draw_thick_line(@x + @width, @y, @x + @width, @y + @height, @border_color, 5)
 
     # draw background
     Gosu.draw_rect(@x, @y, @width, @height, @bg_color, ZOrder::UI0)
@@ -34,6 +34,22 @@ class UI
     # draw image
     @img.draw(@x, @y-(@img.height/2), ZOrder::UI1) if not @img.nil? && @img.height >= 130 # indicating that the image is tower
   end
+
+  def draw_thick_line(x1, y1, x2, y2, color, width)
+    angle = Math.atan2(y2 - y1, x2 - x1)
+    offset_x = Math.sin(angle) * width / 2
+    offset_y = Math.cos(angle) * width / 2
+  
+    # Draw two lines slightly offset to each side
+    Gosu.draw_quad(
+      x1 - offset_x, y1 + offset_y, color,
+      x1 + offset_x, y1 - offset_y, color,
+      x2 + offset_x, y2 - offset_y, color,
+      x2 - offset_x, y2 + offset_y, color,
+      ZOrder::UI1
+    )
+  end
+  
 
   def get_ui_type
     return @ui_type
