@@ -9,7 +9,7 @@ class UI
     @width = button[3]
     @height = button[4]
     @border_color = button[5]
-    @bg_color = button[6]
+    @bg = button[6]
     @img = Gosu::Image.new(button[7]) if not button[7].nil?
   end
 
@@ -22,17 +22,17 @@ class UI
   end
 
   def draw_button
-    # draw border (border line)
-    draw_thick_line(@x, @y, @x + @width, @y, @border_color, 5)
-    draw_thick_line(@x, @y + @height, @x + @width, @y + @height, @border_color, 5)
-    draw_thick_line(@x, @y, @x, @y + @height, @border_color, 5)
-    draw_thick_line(@x + @width, @y, @x + @width, @y + @height, @border_color, 5)
+    # draw_thick_line(@x, @y, @x + @width, @y, @border_color, 5)
+    # draw_thick_line(@x, @y + @height, @x + @width, @y + @height, @border_color, 5)
+    # draw_thick_line(@x, @y, @x, @y + @height, @border_color, 5)
+    # draw_thick_line(@x + @width, @y, @x + @width, @y + @height, @border_color, 5)
 
     # draw background
-    Gosu.draw_rect(@x, @y, @width, @height, @bg_color, ZOrder::UI0)
+    @bg.draw(@x, @y, ZOrder::UI0)
+    # Gosu.draw_rect(@x, @y, @width, @height, @bg_color, ZOrder::UI0)
 
     # draw image
-    @img.draw(@x, @y-(@img.height/2), ZOrder::UI1) if not @img.nil? && @img.height >= 130 # indicating that the image is tower
+    @img.draw(@x+(@width/2)-(@img.width/2), @y-(@img.height/2), ZOrder::UI1) if not @img.nil? && @img.height >= 130 # indicating that the image is tower
   end
 
   def draw_thick_line(x1, y1, x2, y2, color, width)
