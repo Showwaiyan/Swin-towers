@@ -54,7 +54,7 @@ class Tower
   end
 
   def upgrade
-    return if @current_level == 2
+    return if @current_level >= MAX_TOWER_LEVEL
     @upgrade = true
     # For Tower
     previous_level = @current_level
@@ -74,6 +74,7 @@ class Tower
 
   def upgrade_frame
     if @current_frame == @obj.size-1  
+      # make default frame and animation
       @upgrade = false
 
       # For Tower
@@ -81,7 +82,9 @@ class Tower
       @current_frame = 0
 
       # For Archer
-      @archer_order = ZOrder::ARCHER
+      if (@current_level != 4 && @current_level != 7)  
+        @archer_order = ZOrder::ARCHER if @current_level != 4
+      end
     end 
     update_frame
   end
@@ -95,7 +98,9 @@ class Tower
   end
 
   def update_archer_pos
-    @archer_pos[1] -= 15
+    @archer_pos[1] -= 15 if @current_level == 2
+    @archer_pos[1] -= 10 if @current_level == 3
+    @archer_pos[1] -= 5 if @current_level == 5
   end
 
   def update_frame

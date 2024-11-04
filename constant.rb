@@ -15,6 +15,9 @@ PLAYER_HP_COLOR = Gosu::Color::GREEN
 # Wave File location
 WAVE_FILE = 'Waves/wave_'
 
+# Maximum level for tower
+MAX_TOWER_LEVEL = 7
+
 # UI
 # Tower Create button 
 TOWER_CREATE_BTN_UI_TYPE = 'tower_create_button'
