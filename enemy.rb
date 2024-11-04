@@ -145,6 +145,10 @@ class Enemy
     return @destory
   end
 
+  def get_pos
+    return @pos
+  end 
+
   # Center the enemy sprites
   def center_x(x)
     x - (@obj[@current_frame].width / 2)
