@@ -28,7 +28,8 @@ class Game < Gosu::Window
     @overlay_tower = nil
 
     # UI
-    @in_game_ui = [UI.new(TOWER_CREATE_BTN)]
+    @in_game_ui = [UI.new(TOWER_CREATE_BTN),
+                   UI.new(TOWER_UPGRADE_BTN)]
   end
   
   def button_down(id)
@@ -36,14 +37,6 @@ class Game < Gosu::Window
       when  Gosu::KB_ESCAPE # Instantly close the game, just for prototype version
         close
       when Gosu::MS_LEFT
-        # tower selected check
-        @towers.each do |tower|
-          if tower.is_clicked?(mouse_x, mouse_y) && @is_tower_overlay == false
-            @towers.each { |tower| tower.unselect_tower } # make to select only one at a time
-            tower.select_tower
-          end
-        end
-
         # tower creating
         if @is_tower_overlay
           # if tower is overlay, then left click will create the tower
@@ -65,13 +58,25 @@ class Game < Gosu::Window
                 return if TOWER_CENTER.empty? # if there is no place to build the tower
                 # Show tower overlay 
                 @is_tower_overlay = true
-                # @not_placeable_tower = false
+              when 'tower_upgrade_button'
+                # tower = @towers.find { |tower| tower.is_selected? }
+                # tower.upgrade if !tower.nil?
             end
           end
         end
         
+        # tower selected check
+        @towers.each do |tower|
+          if tower.is_clicked?(mouse_x, mouse_y) && @is_tower_overlay == false
+            @towers.each { |tower| tower.unselect_tower } # make to select only one at a time
+            tower.select_tower
 
+            # if tower is selected, then upgrade button will be shown
 
+          else 
+            tower.unselect_tower
+          end
+        end
     end
   end
 
