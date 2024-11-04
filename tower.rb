@@ -36,6 +36,7 @@ class Tower
   def update
     unless is_upgrading?
       self.update_frame
+      self.update_arhcer_direction if update_direction(direction)
     else 
       self.upgrade_frame
     end
@@ -98,13 +99,38 @@ class Tower
   end
 
   def update_archer_pos
-    @archer_pos[1] -= 15 if @current_level == 2
-    @archer_pos[1] -= 10 if @current_level == 3
+    @archer_pos[1] -= 10 if @current_level == 2
+    @archer_pos[1] -= 5 if @current_level == 3
     @archer_pos[1] -= 5 if @current_level == 5
   end
 
   def update_frame
     @current_frame = (Gosu::milliseconds / FRAME_DELAY) % @obj.size
+    @current_archer_frame = (Gosu::milliseconds / FRAME_DELAY) % @archer_obj.size
+  end
+
+  def update_direction(direction)
+    direction = (Vector.elements(direction) - Vector.elements(@archer_pos)).normalize
+    previous_direction = @current_archer_direction
+    angle = Math.atan2(direction[1], direction[0]).to_f
+    if angle > -Math::PI/4 && angle <= Math::PI/4
+      @current_archer_direction = RIGHT
+    elsif angle > Math::PI/4 && angle <= 3*Math::PI/4
+      @current_archer_direction = DOWN
+    elsif angle > 3*Math::PI/4 || angle <= -3*Math::PI/4
+      @current_archer_direction = LEFT
+    else
+      @current_archer_direction = UP
+    end
+    return previous_direction != @current_archer_direction
+  end
+
+  def update_arhcer_direction
+    @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_archer_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
+  end
+
+  def get_target(target)
+    @target = target
   end
 
   def draw_overlay(mouse_x, mouse_y, color)
@@ -187,7 +213,7 @@ class Tower
   end
   def center_y(y, flag = false)
     if flag
-      y - (@archer_obj[@current_archer_frame].height / 2)
+      y - (@archer_obj[@current_archer_frame].height / 2)-5
     else
       y - (@obj[@current_frame].height - @obj[@current_frame].height / 4)
     end

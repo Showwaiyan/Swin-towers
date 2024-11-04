@@ -19,7 +19,7 @@ class Game < Gosu::Window
     @enemies = []
     @last_spawn = Gosu.milliseconds
     @current_wave = 1
-    # @wave_file = File.open(WAVE_FILE + @current_wave.to_s + '.txt', 'r')
+    @wave_file = File.open(WAVE_FILE + @current_wave.to_s + '.txt', 'r')
 
     # Tower
     @towers = []
@@ -80,7 +80,7 @@ class Game < Gosu::Window
   def update
     # Enemy
     # following code will be uncommented until the official wave files are created
-    # spawn_enemy
+    spawn_enemy
 
     @enemies.compact! 
     @enemies.each { |enemy| enemy.update }
@@ -88,7 +88,7 @@ class Game < Gosu::Window
 
     # Update wave if all enemies are spawned and cleared from the map
     # follwoing code will be commented until the official wave files are created
-    # update_wave if @wave_file.eof? && @enemies.empty? 
+    update_wave if @wave_file.eof? && @enemies.empty? 
 
     # Tower
     @towers.each { |tower| tower.update }
