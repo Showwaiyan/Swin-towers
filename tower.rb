@@ -36,7 +36,7 @@ class Tower
   def update
     unless is_upgrading?
       self.update_frame
-      self.update_arhcer_direction if update_direction(direction)
+      self.update_arhcer_direction if update_direction([100,400])
     else 
       self.upgrade_frame
     end
@@ -55,7 +55,8 @@ class Tower
   end
 
   def upgrade
-    return if @current_level >= MAX_TOWER_LEVEL
+    return if @current_level >= MAX_TOWER_LEVEL # if max level, don't upgrade
+
     @upgrade = true
     # For Tower
     previous_level = @current_level
@@ -65,6 +66,9 @@ class Tower
 
     # For Archer
     @archer_order = ZOrder::BACKGROUND # to make the archer disppear when the tower is upgrading
+    if @current_level == 3 || @current_level == 6
+      @current_archer_level += 1 
+    end
     update_archer_pos
     # passed
   end
@@ -83,9 +87,11 @@ class Tower
       @current_frame = 0
 
       # For Archer
-      if (@current_level != 4 && @current_level != 7)  
-        @archer_order = ZOrder::ARCHER if @current_level != 4
+      unless @current_level == 4 || @current_level == 7
+        @archer_order = ZOrder::ARCHER
       end
+      @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
+      @current_archer_frame = 0
     end 
     update_frame
   end
@@ -100,7 +106,7 @@ class Tower
 
   def update_archer_pos
     @archer_pos[1] -= 10 if @current_level == 2
-    @archer_pos[1] -= 5 if @current_level == 3
+    @archer_pos[1] -= 10 if @current_level == 3
     @archer_pos[1] -= 5 if @current_level == 5
   end
 
