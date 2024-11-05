@@ -19,6 +19,7 @@ class Tower
 
     # highligt flag for tower
     @highlight = false
+    @target_area = 100
 
     # tower upgrading
     @upgrade = false
@@ -50,7 +51,7 @@ class Tower
 
   def draw
     self.draw_archer_tower
-    draw_circle(@pos[0], @pos[1], @obj[0].width/2, Gosu::Color::rgba(255,255,0,128), ZOrder::OBJECT) if @highlight
+    draw_circle(@pos[0], @pos[1], @target_area, Gosu::Color::rgba(255,255,0,128), ZOrder::OBJECT) if @highlight
   end
 
   def draw_archer_tower
@@ -69,6 +70,7 @@ class Tower
     @current_level += 1
     @current_frame = 0
     @obj = Gosu::Image.load_tiles(TOWER_SPRITE+'upgrade/'+previous_level.to_s+'_'+@current_level.to_s+'.png', TOWER_SPRITE_WIDTH, TOWER_SPRITE_HEIGHT)
+    @target_area += 10
 
     # For Archer
     @archer_order = ZOrder::BACKGROUND # to make the archer disppear when the tower is upgrading
