@@ -23,6 +23,10 @@ class Tower
     # tower upgrading
     @upgrade = false
 
+    # archer shooting
+    @attack = false
+    @attack_speed = 200
+
     # Archer
     @current_archer_frame = 0
     @current_archer_animation = IDEL
@@ -34,11 +38,13 @@ class Tower
   end
 
   def update
-    unless is_upgrading?
-      self.update_frame
-      self.update_arhcer_direction if update_direction([100,400])
-    else 
+    if is_upgrading?
       self.upgrade_frame
+    elsif is_attacking?
+      self.attack_frame
+    else 
+      self.update_frame
+      self.update_arhcer_direction if update_direction([800,600])
     end
   end
 
@@ -113,6 +119,32 @@ class Tower
   def update_frame
     @current_frame = (Gosu::milliseconds / FRAME_DELAY) % @obj.size
     @current_archer_frame = (Gosu::milliseconds / FRAME_DELAY) % @archer_obj.size
+    @current_archer_frame = (Gosu::milliseconds / @attack_speed) % @archer_obj.size if is_attacking?
+    @current_archer_frame = @archer_obj.size - 1 - (Gosu.milliseconds / @attack_speed) % @archer_obj.size if is_attacking? && @current_archer_direction == RIGHT
+  end
+
+  def attack
+    @attack = true 
+
+    # For Archer
+    @current_archer_animation = ATTACK
+    @current_archer_frame = 0
+    @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_archer_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
+    @current_archer_frame = @archer_obj.size - 1 if @current_archer_direction = RIGHT
+  end
+
+  def is_attacking?
+    return @attack
+  end
+
+  def attack_frame
+    if (@current_archer_frame == @archer_obj.size-1 && @current_archer_direction != RIGHT) || (@current_archer_frame == 0 && @current_archer_direction == RIGHT)
+      @attack = false
+      @current_archer_animation = IDEL
+      @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_archer_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
+      @current_archer_frame = 0
+    end
+    update_frame
   end
 
   def update_direction(direction)

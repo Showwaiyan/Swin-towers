@@ -61,6 +61,7 @@ DOWN = 'D'
 WALK = '_Walk'
 DEATH = '_Death'
 IDEL = '_Idel'
+ATTACK = '_Attack'
 
 # Orc
 ORC_SPRITE = 'Assets/orc/'
