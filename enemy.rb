@@ -145,9 +145,13 @@ class Enemy
     return @destory
   end
 
-  def get_pos
-    return @pos
+  def get_pos_x
+    return @pos[0]
   end 
+
+  def get_pos_y
+    return @pos[1]
+  end
 
   # Center the enemy sprites
   def center_x(x)

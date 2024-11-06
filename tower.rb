@@ -46,7 +46,7 @@ class Tower
       self.attack_frame
     else 
       self.update_frame
-      self.update_arhcer_direction if update_direction([800,600])
+      self.update_arhcer_direction if update_direction
     end
   end
 
@@ -150,7 +150,8 @@ class Tower
     update_frame
   end
 
-  def update_direction(direction)
+  def update_direction
+    direction = @target.nil? ? [0,0] : Vector.elements([@target.get_pos_x, @target.get_pos_y])
     direction = (Vector.elements(direction) - Vector.elements(@archer_pos)).normalize
     previous_direction = @current_archer_direction
     angle = Math.atan2(direction[1], direction[0]).to_f
@@ -173,6 +174,8 @@ class Tower
   def get_target(enemy)
     if is_enemy_in_range?(enemy)
       @target = enemy
+    else 
+      @target = nil
     end
   end
 
