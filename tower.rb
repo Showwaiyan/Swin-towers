@@ -24,9 +24,10 @@ class Tower
     # tower upgrading
     @upgrade = false
 
-    # archer shooting
+    # towre shooting
     @attack = false
     @attack_speed = 200
+    @target = nil
 
     # Archer
     @current_archer_frame = 0
@@ -169,8 +170,15 @@ class Tower
     @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_archer_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
   end
 
-  def get_target(target)
-    @target = target
+  def get_target(enemy)
+    if is_enemy_in_range?(enemy)
+      @target = enemy
+    end
+  end
+
+  def is_enemy_in_range?(enemy)
+    distance = Math.sqrt((enemy.get_pos_x - @pos[0])**2 + (enemy.get_pos_y - @pos[1])**2)
+    return distance < @target_area
   end
 
   def draw_overlay(mouse_x, mouse_y, color)
