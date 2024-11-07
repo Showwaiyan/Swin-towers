@@ -161,6 +161,7 @@ class Tower
     @current_frame = 0
     @obj = Gosu::Image.load_tiles(TOWER_SPRITE+'upgrade/'+previous_level.to_s+'_'+@current_level.to_s+'.png', TOWER_SPRITE_WIDTH, TOWER_SPRITE_HEIGHT)
     @target_area += 10
+    @tower_damage += 1
 
     # For Archer
     @archer_order = ZOrder::BACKGROUND # to make the archer disppear when the tower is upgrading

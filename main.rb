@@ -60,7 +60,7 @@ class Game < Gosu::Window
                 @is_tower_overlay = true
               when 'tower_upgrade_button'
                 tower = @towers.find { |tower| tower.is_selected? }
-                tower.upgrade if !tower.nil?
+                tower.upgrade if !tower.nil? && !tower.is_arrow_exist?
             end
           end
         end
