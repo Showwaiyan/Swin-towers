@@ -15,6 +15,9 @@ PLAYER_HP_COLOR = Gosu::Color::GREEN
 # Wave File location
 WAVE_FILE = 'Waves/wave_'
 
+# Maximum wave
+MAX_WAVE = 1
+
 # Maximum level for tower
 MAX_TOWER_LEVEL = 7
 
@@ -51,6 +54,10 @@ ARCHER_SPRITE = 'Assets/archer/'
 ARCHER_SPRITE_WIDTH = 48
 ARCHER_SPRITE_HEIGHT = 48
 
+ARROW_SPRITE = 'Assets/archer/arrow.png'
+ARROW_WIDTH = 14
+ARROW_HEIGHT = 3
+
 # Direction
 LEFT = 'L'
 RIGHT = 'R'
@@ -68,28 +75,28 @@ ORC_SPRITE = 'Assets/orc/'
 ORC_SPRITE_WIDTH = 48
 ORC_SPRITE_HEIGHT = 48
 ORC_HP = 20
-ORC_SPEED = 0.5
+ORC_SPEED = 0.3
 
 # Slime
 SLIME_SPRITE = 'Assets/slime/'
 SLIME_SPRITE_WIDTH = 48
 SLIME_SPRITE_HEIGHT = 48
 SLIME_HP = 3
-SLIME_SPEED = 0.8
+SLIME_SPEED = 0.5
 
 # Hound
 HOUND_SPRITE = 'Assets/hound/'
 HOUND_SPRITE_WIDTH = 48
 HOUND_SPRITE_HEIGHT = 48
 HOUND_HP = 10
-HOUND_SPEED = 1
+HOUND_SPEED = 0.7
 
 # Bee
 BEE_SPRITE = 'Assets/bee/'
 BEE_SPRITE_WIDTH = 48
 BEE_SPRITE_HEIGHT = 48
 BEE_HP = 8
-BEE_SPEED = 1
+BEE_SPEED = 0.8
 
 # Path for Enemy
 PATH1 = [[0, 315], [79, 280], [185, 210], [283, 167], [367, 255], [288, 433], [208, 526], [269, 597], [365, 632], [500, 618], [625, 544], [733, 474], [835, 472], [875, 558], [915, 589], [1024, 630]]

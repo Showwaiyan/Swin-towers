@@ -95,8 +95,10 @@ class Game < Gosu::Window
 
     # Game Mechanics
     @towers.each do |tower|
+      next if tower.is_set_target?
       @enemies.each do |enemy|
         tower.get_target(enemy)        
+        break if tower.is_set_target?
       end
     end
 
@@ -124,6 +126,7 @@ class Game < Gosu::Window
   end
 
   def update_wave
+    return if @current_wave >= MAX_WAVE
     @current_wave += 1
     @wave_file = File.open(WAVE_FILE + @current_wave.to_s + '.txt', 'r')
   end

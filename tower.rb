@@ -1,6 +1,7 @@
 require 'gosu'
 require 'matrix'
 require_relative 'constant.rb'
+require_relative 'arrow.rb'
 
 class Tower
   def initialize
@@ -19,15 +20,17 @@ class Tower
 
     # highligt flag for tower
     @highlight = false
-    @target_area = 100
+    @target_area = 110
 
     # tower upgrading
     @upgrade = false
 
     # towre shooting
     @attack = false
-    @attack_speed = 200
+    @attack_speed = 2
+    @tower_damage = 1
     @target = nil
+    @arrow = nil
 
     # Archer
     @current_archer_frame = 0
@@ -40,19 +43,49 @@ class Tower
   end
 
   def update
+    # Frame and Direction Updating
+    if self.is_set_target? && @target.is_death?
+      @target = nil
+      @attack = false
+      @arrow = nil
+    end
+    
+    if is_set_target? && !is_enemy_in_range?(@target)
+      @target = nil
+      @arrow = nil
+    end
+
     if is_upgrading?
       self.upgrade_frame
-    elsif is_attacking?
+    elsif is_set_target?
+      self.attack if not is_arrow_exist?
       self.attack_frame
+      self.update_arhcer_direction if update_direction
     else 
       self.update_frame
-      self.update_arhcer_direction if update_direction
     end
+
+    if self.is_set_target? && @arrow.hit?([@target.get_pos_x, @target.get_pos_y])
+      @target.hit(@tower_damage)
+      @arrow = nil
+    end
+
+    @arrow.update if is_arrow_exist?
+
+    if self.is_set_target? && @target.is_death?
+      @target = nil
+      @attack = false
+      @arrow = nil
+    end
+
+    update_archer_animation
+
   end
 
   def draw
     self.draw_archer_tower
     draw_circle(@pos[0], @pos[1], @target_area, Gosu::Color::rgba(255,255,0,128), ZOrder::OBJECT) if @highlight
+    @arrow.draw if is_arrow_exist?
   end
 
   def draw_archer_tower
@@ -122,22 +155,36 @@ class Tower
   def update_frame
     @current_frame = (Gosu::milliseconds / FRAME_DELAY) % @obj.size
     @current_archer_frame = (Gosu::milliseconds / FRAME_DELAY) % @archer_obj.size
-    @current_archer_frame = (Gosu::milliseconds / @attack_speed) % @archer_obj.size if is_attacking?
-    @current_archer_frame = @archer_obj.size - 1 - (Gosu.milliseconds / @attack_speed) % @archer_obj.size if is_attacking? && @current_archer_direction == RIGHT
+    @current_archer_frame = (Gosu::milliseconds / FRAME_DELAY) % @archer_obj.size if is_attacking?
+    @current_archer_frame = @archer_obj.size - 1 - (Gosu.milliseconds / FRAME_DELAY) % @archer_obj.size if is_attacking? && @current_archer_direction == RIGHT
+  end
+
+  def update_archer_animation
+    if is_set_target?
+      @current_archer_animation = ATTACK
+    else
+      @current_archer_animation = IDEL
+    end
   end
 
   def attack
     @attack = true 
-
     # For Archer
     @current_archer_animation = ATTACK
     @current_archer_frame = 0
     @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_archer_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
     @current_archer_frame = @archer_obj.size - 1 if @current_archer_direction = RIGHT
+
+    # For Arrow
+    @arrow = Arrow.new(@archer_pos, @attack_speed, @target, @tower_damage)
   end
 
   def is_attacking?
     return @attack
+  end
+
+  def is_arrow_exist?
+    return !@arrow.nil?
   end
 
   def attack_frame
@@ -176,7 +223,12 @@ class Tower
       @target = enemy
     else 
       @target = nil
+      @arrow = nil
     end
+  end
+
+  def is_set_target?
+    return !@target.nil?  
   end
 
   def is_enemy_in_range?(enemy)
