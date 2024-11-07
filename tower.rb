@@ -95,6 +95,62 @@ class Tower
     end
   end
 
+  def draw_overlay(mouse_x, mouse_y, color)
+    @obj[0].draw(center_x(mouse_x), center_y(mouse_y), ZOrder::UI1)
+    draw_circle(mouse_x, mouse_y, @obj[0].width/2, color, ZOrder::UI1)
+  end
+
+  def select_tower
+    @highlight = true
+  end
+
+  def unselect_tower
+    @highlight = false
+  end
+
+  def is_selected?
+    return @highlight
+  end
+
+  def draw_circle(x, y, radius, color, z = 0, steps = 30)
+    # To indicate by color that the tower can be placed or not
+    angle_step = 2 * Math::PI / steps
+    (0...steps).each do |i|
+      angle1 = i * angle_step
+      angle2 = (i + 1) * angle_step
+  
+      x1 = x + radius * Math.cos(angle1)
+      y1 = y + radius * Math.sin(angle1)
+      x2 = x + radius * Math.cos(angle2)
+      y2 = y + radius * Math.sin(angle2)
+  
+      Gosu.draw_triangle(x, y, color, x1, y1, color, x2, y2, color, z)
+    end
+  end
+
+  def update_ZOrder(x,y)
+    # to make the tower on the down side of path will be upabove layer on enemy
+    if (TOWER_CENTER.index([x,y])+1) % 2 == 0
+      @order = ZOrder::TOWER_DOWN
+    else
+      @order = ZOrder::TOWER_UP
+    end
+  end
+
+  def update_frame
+    @current_frame = (Gosu::milliseconds / FRAME_DELAY) % @obj.size
+    @current_archer_frame = (Gosu::milliseconds / FRAME_DELAY) % @archer_obj.size
+    @current_archer_frame = (Gosu::milliseconds / FRAME_DELAY) % @archer_obj.size if is_attacking?
+    @current_archer_frame = @archer_obj.size - 1 - (Gosu.milliseconds / FRAME_DELAY) % @archer_obj.size if is_attacking? && @current_archer_direction == RIGHT
+  end
+
+  def update_pos(x, y)
+    @pos[0] = x
+    @pos[1] = y
+    @archer_pos[0] = x
+    @archer_pos[1] = y
+  end
+
   def upgrade
     return if @current_level >= MAX_TOWER_LEVEL # if max level, don't upgrade
 
@@ -112,7 +168,6 @@ class Tower
       @current_archer_level += 1 
     end
     update_archer_pos
-    # passed
   end
 
   def is_upgrading?
@@ -138,36 +193,8 @@ class Tower
     update_frame
   end
 
-  def update_ZOrder(x,y)
-    if (TOWER_CENTER.index([x,y])+1) % 2 == 0
-      @order = ZOrder::TOWER_DOWN
-    else
-      @order = ZOrder::TOWER_UP
-    end
-  end
-
-  def update_archer_pos
-    @archer_pos[1] -= 10 if @current_level == 2
-    @archer_pos[1] -= 10 if @current_level == 3
-    @archer_pos[1] -= 5 if @current_level == 5
-  end
-
-  def update_frame
-    @current_frame = (Gosu::milliseconds / FRAME_DELAY) % @obj.size
-    @current_archer_frame = (Gosu::milliseconds / FRAME_DELAY) % @archer_obj.size
-    @current_archer_frame = (Gosu::milliseconds / FRAME_DELAY) % @archer_obj.size if is_attacking?
-    @current_archer_frame = @archer_obj.size - 1 - (Gosu.milliseconds / FRAME_DELAY) % @archer_obj.size if is_attacking? && @current_archer_direction == RIGHT
-  end
-
-  def update_archer_animation
-    if is_set_target?
-      @current_archer_animation = ATTACK
-    else
-      @current_archer_animation = IDEL
-    end
-  end
-
   def attack
+    # Start attacking
     @attack = true 
     # For Archer
     @current_archer_animation = ATTACK
@@ -179,15 +206,8 @@ class Tower
     @arrow = Arrow.new(@archer_pos, @attack_speed, @target, @tower_damage)
   end
 
-  def is_attacking?
-    return @attack
-  end
-
-  def is_arrow_exist?
-    return !@arrow.nil?
-  end
-
   def attack_frame
+    # update archer attack frame
     if (@current_archer_frame == @archer_obj.size-1 && @current_archer_direction != RIGHT) || (@current_archer_frame == 0 && @current_archer_direction == RIGHT)
       @attack = false
       @current_archer_animation = IDEL
@@ -197,25 +217,8 @@ class Tower
     update_frame
   end
 
-  def update_direction
-    direction = @target.nil? ? [0,0] : Vector.elements([@target.get_pos_x, @target.get_pos_y])
-    direction = (Vector.elements(direction) - Vector.elements(@archer_pos)).normalize
-    previous_direction = @current_archer_direction
-    angle = Math.atan2(direction[1], direction[0]).to_f
-    if angle > -Math::PI/4 && angle <= Math::PI/4
-      @current_archer_direction = RIGHT
-    elsif angle > Math::PI/4 && angle <= 3*Math::PI/4
-      @current_archer_direction = DOWN
-    elsif angle > 3*Math::PI/4 || angle <= -3*Math::PI/4
-      @current_archer_direction = LEFT
-    else
-      @current_archer_direction = UP
-    end
-    return previous_direction != @current_archer_direction
-  end
-
-  def update_arhcer_direction
-    @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_archer_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
+  def is_attacking?
+    return @attack
   end
 
   def get_target(enemy)
@@ -231,30 +234,50 @@ class Tower
     return !@target.nil?  
   end
 
+  def is_arrow_exist?
+    return !@arrow.nil?
+  end
+
   def is_enemy_in_range?(enemy)
     distance = Math.sqrt((enemy.get_pos_x - @pos[0])**2 + (enemy.get_pos_y - @pos[1])**2)
     return distance < @target_area
   end
 
-  def draw_overlay(mouse_x, mouse_y, color)
-    @obj[0].draw(center_x(mouse_x), center_y(mouse_y), ZOrder::UI1)
-    draw_circle(mouse_x, mouse_y, @obj[0].width/2, color, ZOrder::UI1)
+  def update_direction
+    direction = @target.nil? ? [0,0] : Vector.elements([@target.get_pos_x, @target.get_pos_y])
+    direction = (Vector.elements(direction) - Vector.elements(@archer_pos)).normalize
+
+    previous_direction = @current_archer_direction
+    angle = Math.atan2(direction[1], direction[0]).to_f
+
+    if angle > -Math::PI/4 && angle <= Math::PI/4
+      @current_archer_direction = RIGHT
+    elsif angle > Math::PI/4 && angle <= 3*Math::PI/4
+      @current_archer_direction = DOWN
+    elsif angle > 3*Math::PI/4 || angle <= -3*Math::PI/4
+      @current_archer_direction = LEFT
+    else
+      @current_archer_direction = UP
+    end
+    return previous_direction != @current_archer_direction
   end
 
-  def draw_circle(x, y, radius, color, z = 0, steps = 30)
-    # To indicate by color that the tower can be placed or not
-    angle_step = 2 * Math::PI / steps
-    (0...steps).each do |i|
-      angle1 = i * angle_step
-      angle2 = (i + 1) * angle_step
-  
-      x1 = x + radius * Math.cos(angle1)
-      y1 = y + radius * Math.sin(angle1)
-      x2 = x + radius * Math.cos(angle2)
-      y2 = y + radius * Math.sin(angle2)
-  
-      Gosu.draw_triangle(x, y, color, x1, y1, color, x2, y2, color, z)
+  def update_archer_pos
+    @archer_pos[1] -= 10 if @current_level == 2
+    @archer_pos[1] -= 10 if @current_level == 3
+    @archer_pos[1] -= 5 if @current_level == 5
+  end
+
+  def update_archer_animation
+    if is_set_target?
+      @current_archer_animation = ATTACK
+    else
+      @current_archer_animation = IDEL
     end
+  end
+
+  def update_arhcer_direction
+    @archer_obj = Gosu::Image.load_tiles(ARCHER_SPRITE+@current_archer_level.to_s+'/'+@current_archer_direction+@current_archer_animation+'.png', ARCHER_SPRITE_WIDTH, ARCHER_SPRITE_HEIGHT)
   end
 
   def update_pos(x, y)
@@ -272,6 +295,8 @@ class Tower
     return @pos[1]
   end
 
+
+  # Chekcing whether the tower is clicked or not (for upgrade)
   def is_clicked?(mouse_x, mouse_y)
     leftX = @pos[0] - TOWER_SPRITE_WIDTH / 2
     topY = @pos[1] - TOWER_SPRITE_HEIGHT / 4
@@ -282,18 +307,6 @@ class Tower
     else
       return false
     end
-  end
-
-  def select_tower
-    @highlight = true
-  end
-
-  def unselect_tower
-    @highlight = false
-  end
-
-  def is_selected?
-    return @highlight
   end
 
   def is_clicked_in_area?(leftX, topY, rightX, bottomY, mouse_x, mouse_y)

@@ -70,6 +70,7 @@ class Game < Gosu::Window
           if tower.is_clicked?(mouse_x, mouse_y) && @is_tower_overlay == false
             @towers.each { |tower| tower.unselect_tower } # make to select only one at a time
             tower.select_tower
+            break
           else 
             tower.unselect_tower
           end
@@ -162,7 +163,6 @@ class Game < Gosu::Window
         @overlay_tower.update_ZOrder(center_x, center_y)
         @can_create_tower = true
         return true
-        break
       else
         @overlay_tower.update_pos(mouse_x, mouse_y)
       end
@@ -184,7 +184,7 @@ class Game < Gosu::Window
     else
      return false
     end
- end
+  end
 end
 
 Game.new.show
