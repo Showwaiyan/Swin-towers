@@ -20,6 +20,7 @@ class Game < Gosu::Window
     @last_spawn = Gosu.milliseconds
     @current_wave = 1
     @wave_file = File.open(WAVE_FILE + @current_wave.to_s + '.txt', 'r')
+    @wave_start = false
 
     # Tower
     @towers = []
@@ -29,7 +30,8 @@ class Game < Gosu::Window
 
     # UI
     @in_game_ui = [UI.new(TOWER_CREATE_BTN),
-                   UI.new(TOWER_UPGRADE_BTN)]
+                   UI.new(TOWER_UPGRADE_BTN),
+                   UI.new(WAVE_START_BTN)]
   end
   
   def button_down(id)
@@ -61,6 +63,10 @@ class Game < Gosu::Window
               when 'tower_upgrade_button'
                 tower = @towers.find { |tower| tower.is_selected? }
                 tower.upgrade if !tower.nil? && !tower.is_arrow_exist?
+              when 'wave_start_button'
+                # start the wave
+                @wave_start = true
+                btn.set_operate(false)
             end
           end
         end
@@ -81,7 +87,7 @@ class Game < Gosu::Window
   def update
     # Enemy
     # following code will be uncommented until the official wave files are created
-    spawn_enemy
+    spawn_enemy if @wave_start
 
     @enemies.compact! 
     @enemies.each { |enemy| enemy.update }
@@ -130,6 +136,8 @@ class Game < Gosu::Window
     return if @current_wave >= MAX_WAVE
     @current_wave += 1
     @wave_file = File.open(WAVE_FILE + @current_wave.to_s + '.txt', 'r')
+    @wave_start = false
+    @in_game_ui[2].set_operate(true)
   end
 
   def draw_sample_tower(mouse_x, mouse_y)
