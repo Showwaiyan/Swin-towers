@@ -45,7 +45,7 @@ class Enemy
 
   def draw 
     @obj[@current_frame].draw(center_x(@pos[0]), center_y(@pos[1]), ZOrder::ENEMY)
-    self.diaplay_health_bar if !is_death?
+    self.diaplay_health_bar if not is_death?
   end
 
   def move
@@ -155,6 +155,10 @@ class Enemy
 
   def get_pos_y
     return @pos[1]
+  end
+
+  def get_species
+    return @species
   end
 
   # Center the enemy sprites

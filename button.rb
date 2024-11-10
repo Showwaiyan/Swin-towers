@@ -1,7 +1,7 @@
 require 'gosu'
 require_relative 'constant.rb'
 
-class UI
+class Button
   def initialize(button, active=true, operate=true)
     @ui_type = button[0] # string of ui type which indicates to draw the specific page ui elements
     @x = button[1]
@@ -32,7 +32,6 @@ class UI
     # draw image
     @img.draw(@x+(@width/2)-(@img.width/2), @y-(@img.height/2), ZOrder::UI1) if @ui_type == TOWER_CREATE_BTN_UI_TYPE
     @img.draw((@width-@img.width)+@x,(@height-@img.height)/2+@y, ZOrder::UI1) if @ui_type == TOWER_UPGRADE_BTN_UI_TYPE
-    # @img.draw(@x+(@width/2), @y+(@height/2), ZOrder::UI1) if @ui_type == WAVE_START_BTN_UI_TYPE
     @img.draw((@width-@img.width)+@x/4,(@height-@img.height)/2+@y, ZOrder::UI1) if @ui_type == WAVE_START_BTN_UI_TYPE
   end 
 

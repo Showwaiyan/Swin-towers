@@ -3,7 +3,8 @@ require 'matrix'
 require_relative 'constant.rb'
 require_relative 'enemy.rb'
 require_relative 'tower.rb'
-require_relative 'ui.rb'
+require_relative 'button.rb'
+require_relative 'font.rb'
 
 module ZOrder
   BACKGROUND, OBJECT, TOWER_UP, ENEMY, TOWER_DOWN, ARCHER, UI0, UI1 = *0..7
@@ -14,6 +15,8 @@ class Game < Gosu::Window
     super(SCREEN_WIDTH, SCREEN_HEIGHT)
     self.caption = 'Swin Towers'
     @bg = Gosu::Image.new('Assets/map/map.png')
+    @heart = MAXIMUM_HEART
+    @diamond = 0
     
     # Enemy
     @enemies = []
@@ -29,9 +32,11 @@ class Game < Gosu::Window
     @overlay_tower = nil
 
     # UI
-    @in_game_ui = [UI.new(TOWER_CREATE_BTN),
-                   UI.new(TOWER_UPGRADE_BTN),
-                   UI.new(WAVE_START_BTN)]
+    @in_game_buttons = [Button.new(TOWER_CREATE_BTN),
+                   Button.new(TOWER_UPGRADE_BTN),
+                   Button.new(WAVE_START_BTN)]
+    @in_game_texts = [Font.new(HEART_FONT, @heart),
+                      Font.new(DIAMOND_FONT, @diamond)]      
   end
   
   def button_down(id)
@@ -53,7 +58,7 @@ class Game < Gosu::Window
         end
 
         # in game button click event
-        @in_game_ui.each do |btn|
+        @in_game_buttons.each do |btn|
           if btn.clicked?(mouse_x, mouse_y)
             case btn.get_ui_type
               when 'tower_create_button'
@@ -85,12 +90,23 @@ class Game < Gosu::Window
   end
 
   def update
+    return if is_game_over?
     # Enemy
     # following code will be uncommented until the official wave files are created
     spawn_enemy if @wave_start
 
-    @enemies.compact! 
-    @enemies.each { |enemy| enemy.update }
+    @enemies.compact! # remove nil object from the array
+    @enemies.each do |enemy|
+      enemy.update
+      if enemy.check_path_end?
+        reduce_heart
+      end
+    end
+    @enemies.each do |enemy|
+      if enemy.can_destory?
+        increase_diamond(enemy.get_species)
+      end
+    end
     @enemies.delete_if { |enemy| enemy.check_path_end? || enemy.can_destory? }
 
     # Update wave if all enemies are spawned and cleared from the map
@@ -108,13 +124,20 @@ class Game < Gosu::Window
         break if tower.is_set_target?
       end
     end
-
     # UI
+    @in_game_texts.each do |text|
+      case text.get_font_type
+        when 'heart'
+          text.update(@heart)
+        when 'diamond'
+          text.update(@diamond)
+      end
+    end
   end
 
   def draw
     # Draw UI
-    @in_game_ui.each { |btn| btn.draw }
+    @in_game_buttons.each { |btn| btn.draw }
 
     @bg.draw(0, 0, ZOrder::BACKGROUND)
     @towers.each { |tower| tower.draw }
@@ -122,6 +145,30 @@ class Game < Gosu::Window
 
     # Draw Tower Overlay for visualizing the tower placement
     draw_sample_tower(mouse_x,mouse_y) if @is_tower_overlay
+
+    # Draw UI
+    @in_game_texts.each { |text| text.draw }
+  end
+  
+  def reduce_heart
+    @heart -= 1
+  end
+
+  def is_game_over?
+    @heart <= 0
+  end
+
+  def increase_diamond(enemy_type)
+    case enemy_type
+      when 'orc'
+        @diamond += ORC_DIAMOND
+      when 'slime'
+        @diamond += SLIME_DIAMOND
+      when 'hound'
+        @diamond += HOUND_DIAMOND
+      when 'bee'
+        @diamond += BEE_DIAMOND
+    end
   end
 
   def spawn_enemy

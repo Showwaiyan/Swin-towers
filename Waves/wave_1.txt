@@ -1,3 +1,4 @@
-orc
-hound
-bee
+slime
+slime
+slime
+slime
