@@ -2,7 +2,7 @@ require 'gosu'
 require_relative 'constant.rb'
 
 class Button
-  def initialize(button, active=true, operate=true)
+  def initialize(button, active=true, visible=true, operate=true)
     @ui_type = button[0] # string of ui type which indicates to draw the specific page ui elements
     @x = button[1]
     @y = button[2]
@@ -12,7 +12,8 @@ class Button
     @bg = button[6] if not button[6].nil?
     @img = Gosu::Image.new(button[7]) if not button[7].nil?
     @active = active
-    @operate = operate # indicate whether the button can be clicked or not and visible or not
+    @visible =  visible
+    @operate = operate # to check whether the button is clickable or not
   end
 
   def update
@@ -20,7 +21,7 @@ class Button
   end
 
   def draw
-    return if not @operate
+    return if not is_visible?
     self.draw_button
     Gosu.draw_rect(@x, @y, @bg.width, @bg.height, Gosu::Color::rgba(0, 0, 0, 128), ZOrder::UI1) if not @active
   end
@@ -39,19 +40,40 @@ class Button
     return @ui_type
   end
 
-  def set_inactive
-    @active = false
-  end
-
   def set_active 
     @active = true
   end
 
-  def set_operate(operate)
-    @operate = operate
+  def set_inactive
+    @active = false
+  end
+  
+  def set_visible
+    @visible = true
+  end
+  
+  def set_invisible
+    @visible = false
+  end
+
+  def is_visible?
+    return @visible
+  end
+
+  def set_operate
+    @operate = true
+  end
+
+  def set_inoperate
+    @operate = false
+  end
+
+  def is_operate?
+    return @operate
   end
 
   def clicked?(mouse_x, mouse_y)
+    return if not is_operate?
     if mouse_x > @x && mouse_x < @x + @width && mouse_y > @y && mouse_y < @y + @height
       return true
     else

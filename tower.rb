@@ -296,6 +296,10 @@ class Tower
     return @pos[1]
   end
 
+  def get_tower_level
+    return @current_level-1
+  end
+
 
   # Chekcing whether the tower is clicked or not (for upgrade)
   def is_clicked?(mouse_x, mouse_y)

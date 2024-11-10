@@ -16,7 +16,7 @@ class Game < Gosu::Window
     self.caption = 'Swin Towers'
     @bg = Gosu::Image.new('Assets/map/map.png')
     @heart = MAXIMUM_HEART
-    @diamond = 0
+    @diamond = 50
     
     # Enemy
     @enemies = []
@@ -30,6 +30,7 @@ class Game < Gosu::Window
     @is_tower_overlay = false # indicate that tower is just overlay
     @can_create_tower = false # indicate that tower is actually built, not just overlay
     @overlay_tower = nil
+    @selected_tower = nil
 
     # UI
     @in_game_buttons = [Button.new(TOWER_CREATE_BTN),
@@ -49,6 +50,7 @@ class Game < Gosu::Window
           # if tower is overlay, then left click will create the tower
           if @can_create_tower
             create_tower
+            reduce_diamond(TOWERS_COST[0])
             @is_tower_overlay = false
             @can_create_tower = false
           else
@@ -63,6 +65,7 @@ class Game < Gosu::Window
             case btn.get_ui_type
               when 'tower_create_button'
                 return if TOWER_CENTER.empty? # if there is no place to build the tower
+
                 # Show tower overlay 
                 @is_tower_overlay = true
               when 'tower_upgrade_button'
@@ -71,7 +74,8 @@ class Game < Gosu::Window
               when 'wave_start_button'
                 # start the wave
                 @wave_start = true
-                btn.set_operate(false)
+                btn.set_inoperate
+                btn.set_invisible
             end
           end
         end
@@ -81,6 +85,7 @@ class Game < Gosu::Window
           if tower.is_clicked?(mouse_x, mouse_y) && @is_tower_overlay == false
             @towers.each { |tower| tower.unselect_tower } # make to select only one at a time
             tower.select_tower
+            @selected_tower = tower
             break
           else 
             tower.unselect_tower
@@ -124,7 +129,22 @@ class Game < Gosu::Window
         break if tower.is_set_target?
       end
     end
+
     # UI
+    @in_game_buttons.each do |btn|
+      case btn.get_ui_type
+        when 'tower_create_button'
+          if get_diamond < TOWERS_COST[0]
+            btn.set_inoperate
+            btn.set_inactive
+          else
+            btn.set_operate
+            btn.set_active
+          end
+        when 'tower_upgrade_button'
+        when 'wave_start_button'
+      end
+    end
     @in_game_texts.each do |text|
       case text.get_font_type
         when 'heart'
@@ -152,6 +172,14 @@ class Game < Gosu::Window
   
   def reduce_heart
     @heart -= 1
+  end
+
+  def get_diamond
+    return @diamond
+  end
+
+  def reduce_diamond(amount)
+    @diamond -= amount
   end
 
   def is_game_over?
