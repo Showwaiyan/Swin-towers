@@ -152,7 +152,7 @@ class Tower
   end
 
   def upgrade
-    return if @current_level >= MAX_TOWER_LEVEL # if max level, don't upgrade
+    return if is_max_level? # if max level, don't upgrade
 
     @upgrade = true
     # For Tower
@@ -296,10 +296,17 @@ class Tower
     return @pos[1]
   end
 
-  def get_tower_level
-    return @current_level-1
+  def get_cost
+    return TOWERS_COST[@current_level-1]
   end
 
+  def get_upgrade_cost
+    return TOWERS_COST[@current_level]
+  end
+
+  def is_max_level?
+    return @current_level == MAX_TOWER_LEVEL
+  end
 
   # Chekcing whether the tower is clicked or not (for upgrade)
   def is_clicked?(mouse_x, mouse_y)
