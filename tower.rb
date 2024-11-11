@@ -100,15 +100,15 @@ class Tower
     draw_circle(mouse_x, mouse_y, @obj[0].width/2, color, ZOrder::UI1)
   end
 
-  def select_tower
+  def set_highlight
     @highlight = true
   end
 
-  def unselect_tower
+  def remove_highlight
     @highlight = false
   end
 
-  def is_selected?
+  def is_highlighted?
     return @highlight
   end
 

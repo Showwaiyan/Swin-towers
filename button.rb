@@ -72,7 +72,7 @@ class Button
     return @operate
   end
 
-  def clicked?(mouse_x, mouse_y)
+  def is_clicked?(mouse_x, mouse_y)
     return if not is_operate?
     if mouse_x > @x && mouse_x < @x + @width && mouse_y > @y && mouse_y < @y + @height
       return true

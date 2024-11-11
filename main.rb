@@ -28,7 +28,6 @@ class Game < Gosu::Window
   end
 
   def setup_enemies
-    # Enemy
     @enemies = []
     @last_spawn = Gosu.milliseconds
     @current_wave = 1
@@ -79,12 +78,13 @@ class Game < Gosu::Window
     else
       select_tower if @towers.any? { |tower| tower.is_clicked?(mouse_x, mouse_y) }
     end
+    cancel_tower_highlight
   end
 
   def handle_ui_clicks
     btns = @current_ui[:button]
     btns.each do |btn|
-      next unless btn.clicked?(mouse_x, mouse_y)
+      next unless btn.is_clicked?(mouse_x, mouse_y)
 
       case btn.get_ui_type
         when 'tower_create_button' then enable_tower_overlay
@@ -99,10 +99,11 @@ class Game < Gosu::Window
   end
 
   def upgrade_selected_tower
-    tower = select_tower
+    tower = @towers.find(&:is_highlighted?)
     return unless tower && !tower.is_arrow_exist?
     tower.upgrade    
     reduce_diamond(tower.get_cost)
+    tower.remove_highlight
   end
 
   def start_wave(btn)
@@ -112,14 +113,20 @@ class Game < Gosu::Window
   end
 
   def select_tower
-    # @towers.each { |tower| tower.unselect_tower }
-    # selected_tower = @towers.find { |tower| tower.is_clicked?(mouse_x, mouse_y) }
-    # selected_tower&.select_tower
-    return @towers.find { |tower| tower.select_tower }
+    @towers.each { |tower| tower.remove_highlight }
+    selected_tower = @towers.find { |tower| tower.is_clicked?(mouse_x, mouse_y) }
+    selected_tower&.set_highlight
   end
 
   def cancel_tower_overlay
     @is_tower_overlay = false
+  end
+
+  def cancel_tower_highlight
+    if (not @towers.any? { |tower| tower.is_clicked?(mouse_x, mouse_y) }) && !(@current_ui[:button].find { |btn| btn.get_ui_type == 'tower_upgrade_button' }).is_clicked?(mouse_x, mouse_y)
+    # if tower is not selected and upgrade button is no clicked
+      @towers.each { |tower| tower.remove_highlight }
+    end
   end
 
   def update
@@ -195,7 +202,7 @@ class Game < Gosu::Window
   end
 
   def update_tower_upgarde_button(btn)
-    selected_tower = @towers.find(&:is_selected?)
+    selected_tower = @towers.find(&:is_highlighted?)
     if !selected_tower || selected_tower.is_max_level? || @diamond < selected_tower.get_upgrade_cost
       btn.set_inactive
       btn.set_not_operate
@@ -211,8 +218,10 @@ class Game < Gosu::Window
         when 'heart' then text.update(@heart)
         when 'diamond' then text.update(@diamond)
         when 'tower_upgrade' 
-          selected_tower = @towers.find(&:is_selected?)
+          selected_tower = @towers.find(&:is_highlighted?)
           text.update(selected_tower&.get_upgrade_cost)
+          text.set_invisible if !selected_tower || selected_tower.is_max_level?
+          text.set_visible if selected_tower && !selected_tower.is_max_level?
       end
     end
   end
@@ -278,6 +287,7 @@ class Game < Gosu::Window
     TOWER_CENTER.delete([@overlay_tower.get_pos_x, @overlay_tower.get_pos_y])
     @overlay_tower = nil
     reduce_diamond(TOWERS_COST[0])
+    cancel_tower_overlay
   end
 
   def reduce_heart
