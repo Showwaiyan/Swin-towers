@@ -64,7 +64,7 @@ class Button
     @operate = true
   end
 
-  def set_inoperate
+  def set_not_operate
     @operate = false
   end
 
