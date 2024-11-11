@@ -36,7 +36,9 @@ class Game < Gosu::Window
                    Button.new(TOWER_UPGRADE_BTN),
                    Button.new(WAVE_START_BTN)]
     @in_game_texts = [Font.new(HEART_FONT, @heart),
-                      Font.new(DIAMOND_FONT, @diamond)]      
+                      Font.new(DIAMOND_FONT, @diamond),
+                      Font.new(TOWER_BUY_FONT, TOWERS_COST[0]),
+                      Font.new(TOWER_UPGRADE_FONT, 0, false)]
   end
   
   def button_down(id)
@@ -86,9 +88,13 @@ class Game < Gosu::Window
           if tower.is_clicked?(mouse_x, mouse_y) && @is_tower_overlay == false
             @towers.each { |tower| tower.unselect_tower } # make to select only one at a time
             tower.select_tower
+            text = @in_game_texts.find { |text| text.get_font_type == 'tower_upgrade' }
+            text.set_visible
             break
           else 
             tower.unselect_tower
+            text = @in_game_texts.find { |text| text.get_font_type == 'tower_upgrade' }
+            text.set_invisible
           end
         end
     end
@@ -166,6 +172,10 @@ class Game < Gosu::Window
           text.update(@heart)
         when 'diamond'
           text.update(@diamond)
+        when 'tower_upgrade'
+          tower = @towers.find { |tower| tower.is_selected? }
+          return if tower.nil?
+          text.update(tower.get_upgrade_cost)
       end
     end
   end
