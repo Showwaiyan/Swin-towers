@@ -36,7 +36,8 @@ class Game < Gosu::Window
   end
 
   def setup_ui
-    @current_ui = setup_in_game_ui
+    @current_ui = setup_start_menu_ui
+    @current_ui_type = 'start_menu'
   end
 
   def setup_resources
@@ -50,6 +51,14 @@ class Game < Gosu::Window
       text: [Font.new(HEART_FONT, @heart),Font.new(DIAMOND_FONT, @diamond),Font.new(TOWER_BUY_FONT, TOWERS_COST[0]),Font.new(TOWER_UPGRADE_FONT, 0, false)]
     }
     return in_game_ui
+  end
+
+  def setup_start_menu_ui
+    start_menu_ui ={
+      button: [Button.new(START_BTN)],
+      text: [Font.new(GAME_INTRO,"Swin Towers")]
+    }
+    return start_menu_ui
   end
 
   def load_wave_file
@@ -87,6 +96,11 @@ class Game < Gosu::Window
       next unless btn.is_clicked?(mouse_x, mouse_y)
 
       case btn.get_ui_type
+        when 'start_button'
+           @current_ui_type = 'in_game'
+           btn.set_invisible
+           btn.set_not_operate
+          @current_ui = setup_in_game_ui
         when 'tower_create_button' then enable_tower_overlay
         when 'tower_upgrade_button' then upgrade_selected_tower
         when 'wave_start_button' then start_wave(btn)
@@ -123,6 +137,7 @@ class Game < Gosu::Window
   end
 
   def cancel_tower_highlight
+    return if @current_ui_type != 'in_game'
     if (not @towers.any? { |tower| tower.is_clicked?(mouse_x, mouse_y) }) && !(@current_ui[:button].find { |btn| btn.get_ui_type == 'tower_upgrade_button' }).is_clicked?(mouse_x, mouse_y)
     # if tower is not selected and upgrade button is no clicked
       @towers.each { |tower| tower.remove_highlight }
@@ -131,6 +146,17 @@ class Game < Gosu::Window
 
   def update
     return if is_game_over?
+    case @current_ui_type
+      when 'start_menu' then update_start_menu
+      when 'in_game' then update_in_game
+    end
+  end
+
+  def update_start_menu 
+    update_ui
+  end
+
+  def update_in_game
     spawn_enemy if @wave_start
     update_enemies  
     update_wave if wave_complete?
@@ -188,6 +214,7 @@ class Game < Gosu::Window
   end
 
   def update_button_state
+    return if @current_ui[:button].nil?
     @current_ui[:button].each do |btn|
       case btn.get_ui_type
         when 'tower_create_button' then update_tower_create_button(btn)
@@ -213,6 +240,7 @@ class Game < Gosu::Window
   end
 
   def update_texts
+    return if @current_ui[:text].nil?
     @current_ui[:text].each do |text|
       case text.get_font_type
         when 'heart' then text.update(@heart)
@@ -228,10 +256,22 @@ class Game < Gosu::Window
 
   def draw
     draw_background
+    case @current_ui_type
+      when 'start_menu' then draw_start_menu
+      when 'in_game' then draw_in_game
+    end
+  end
+
+  def draw_start_menu
+    Gosu::draw_rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Gosu::Color::rgba(0, 0, 0, 128), ZOrder::UI0)
+    draw_ui
+  end
+
+  def draw_in_game
     draw_towers
     draw_enemies
     draw_ui
-    draw_tower_overlay if @is_tower_overlay
+    draw_tower_overlay if @is_tower_overlay 
   end
 
   def draw_background
@@ -247,8 +287,8 @@ class Game < Gosu::Window
   end
 
   def draw_ui
-    @current_ui[:button].each(&:draw)
-    @current_ui[:text].each(&:draw)
+    @current_ui[:button].each(&:draw) if not @current_ui[:button].nil?
+    @current_ui[:text].each(&:draw) if not @current_ui[:text].nil?
   end
 
   def draw_tower_overlay

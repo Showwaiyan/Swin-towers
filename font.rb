@@ -13,7 +13,7 @@ class Font
     @visisble = visisble
   end
 
-  def update(text)
+  def update(text=@text)
     #passed
     @text = text
   end
