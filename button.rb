@@ -31,7 +31,7 @@ class Button
     @bg.draw(@x, @y, ZOrder::UI0) if not @bg.nil?
 
     # draw image
-    @img.draw(@x+@bg.width/2-@img.width/2, @y+@bg.height/2-@img.height/2, ZOrder::UI1)
+    @img.draw(@x+@bg.width/2-@img.width/2, @y+@bg.height/2-@img.height/2, ZOrder::UI1) if @ui_type == START_BTN_UI_TYPE
     @img.draw(@x+(@width/2)-(@img.width/2), @y-(@img.height/2), ZOrder::UI1) if @ui_type == TOWER_CREATE_BTN_UI_TYPE
     @img.draw((@width-@img.width)+@x,(@height-@img.height)/2+@y, ZOrder::UI1) if @ui_type == TOWER_UPGRADE_BTN_UI_TYPE
     @img.draw((@width-@img.width)+@x/4,(@height-@img.height)/2+@y, ZOrder::UI1) if @ui_type == WAVE_START_BTN_UI_TYPE
