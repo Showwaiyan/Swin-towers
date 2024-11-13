@@ -15,6 +15,7 @@ class Game < Gosu::Window
     super(SCREEN_WIDTH, SCREEN_HEIGHT)
     self.caption = 'Swin Towers'
     @bg = Gosu::Image.new('Assets/map/map.png')
+    @intro_bg = Gosu::Image.new('Assets/map/intro_bg.png')
     @heart = MAXIMUM_HEART
     @diamond = 50
     setup_game
@@ -55,10 +56,17 @@ class Game < Gosu::Window
 
   def setup_start_menu_ui
     start_menu_ui ={
-      button: [Button.new(START_BTN)],
-      text: [Font.new(GAME_INTRO,"Swin Towers")]
+      button: [Button.new(START_BTN)]
     }
     return start_menu_ui
+  end
+
+  def setup_end_menu_ui
+    end_menu_ui ={
+      button: [Button.new(RESTART_BTN)],
+      text: [Font.new(GAME_OUTRO,"")]
+    }
+    return end_menu_ui
   end
 
   def load_wave_file
@@ -263,7 +271,7 @@ class Game < Gosu::Window
   end
 
   def draw_start_menu
-    Gosu::draw_rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Gosu::Color::rgba(0, 0, 0, 128), ZOrder::UI0)
+    draw_intro_background
     draw_ui
   end
 
@@ -276,6 +284,10 @@ class Game < Gosu::Window
 
   def draw_background
     @bg.draw(0, 0, ZOrder::BACKGROUND)
+  end
+
+  def draw_intro_background
+    @intro_bg.draw(0, 0, ZOrder::BACKGROUND)
   end
 
   def draw_towers
