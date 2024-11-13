@@ -14,10 +14,6 @@ class Game < Gosu::Window
   def initialize
     super(SCREEN_WIDTH, SCREEN_HEIGHT)
     self.caption = 'Swin Towers'
-    @bg = Gosu::Image.new('Assets/map/map.png')
-    @intro_bg = Gosu::Image.new('Assets/map/intro_bg.png')
-    @heart = MAXIMUM_HEART
-    @diamond = 50
     setup_game
   end
 
@@ -42,6 +38,10 @@ class Game < Gosu::Window
   end
 
   def setup_resources
+    @bg = Gosu::Image.new('Assets/map/map.png')
+    @intro_bg = Gosu::Image.new('Assets/map/intro_bg.png')
+    @game_over_bg = Gosu::Image.new('Assets/map/game_over_bg.png')
+    @game_finsih_bg = Gosu::Image.new('Assets/map/game_finish_bg.png')
     @heart = MAXIMUM_HEART
     @diamond = INITIAL_DIAMOND
   end
@@ -63,8 +63,7 @@ class Game < Gosu::Window
 
   def setup_end_menu_ui
     end_menu_ui ={
-      button: [Button.new(RESTART_BTN)],
-      text: [Font.new(GAME_OUTRO,"")]
+      button: [Button.new(RESTART_BTN),Button.new(EXIT_BTN)]
     }
     return end_menu_ui
   end
@@ -112,6 +111,8 @@ class Game < Gosu::Window
         when 'tower_create_button' then enable_tower_overlay
         when 'tower_upgrade_button' then upgrade_selected_tower
         when 'wave_start_button' then start_wave(btn)
+        when 'restart_button' then setup_game
+        when 'exit_button' then close
       end
     end
   end
@@ -153,10 +154,11 @@ class Game < Gosu::Window
   end
 
   def update
-    return if is_game_over?
+    update_game_status
     case @current_ui_type
       when 'start_menu' then update_start_menu
       when 'in_game' then update_in_game
+      when 'end_menu' then update_end_menu
     end
   end
 
@@ -171,6 +173,17 @@ class Game < Gosu::Window
     @towers.each(&:update)
     assign_targets
     update_ui
+  end
+
+  def update_end_menu
+    update_ui
+  end
+
+  def update_game_status
+    if is_game_over? || is_game_finished?
+      @current_ui = setup_end_menu_ui
+      @current_ui_type = 'end_menu'
+    end
   end
 
   def spawn_enemy
@@ -195,8 +208,8 @@ class Game < Gosu::Window
   end
 
   def update_wave
-    return if @current_wave >= MAX_WAVE
     @current_wave += 1
+    return if @current_wave >= MAX_WAVE
     load_wave_file
     reset_wave_start
   end
@@ -267,6 +280,7 @@ class Game < Gosu::Window
     case @current_ui_type
       when 'start_menu' then draw_start_menu
       when 'in_game' then draw_in_game
+      when 'end_menu' then draw_end_menu
     end
   end
 
@@ -288,6 +302,15 @@ class Game < Gosu::Window
 
   def draw_intro_background
     @intro_bg.draw(0, 0, ZOrder::BACKGROUND)
+  end
+
+  def draw_end_menu
+    if is_game_over?
+      @game_over_bg.draw(0, 0, ZOrder::BACKGROUND)
+    elsif is_game_finished?
+      @game_finsih_bg.draw(0, 0, ZOrder::BACKGROUND)
+    end
+    draw_ui
   end
 
   def draw_towers
@@ -352,6 +375,10 @@ class Game < Gosu::Window
 
   def is_game_over?
     @heart <= 0
+  end
+
+  def is_game_finished?
+    @current_wave > MAX_WAVE
   end
 
   def increase_diamond(enemy_type)

@@ -35,6 +35,7 @@ class Button
     @img.draw(@x+(@width/2)-(@img.width/2), @y-(@img.height/2), ZOrder::UI1) if @ui_type == TOWER_CREATE_BTN_UI_TYPE
     @img.draw((@width-@img.width)+@x,(@height-@img.height)/2+@y, ZOrder::UI1) if @ui_type == TOWER_UPGRADE_BTN_UI_TYPE
     @img.draw((@width-@img.width)+@x/4,(@height-@img.height)/2+@y, ZOrder::UI1) if @ui_type == WAVE_START_BTN_UI_TYPE
+    @img.draw(@x+(@width/2)-(@img.width/2), @y+(@height/2)-(@img.height/2), ZOrder::UI1) if @ui_type == RESTART_BTN_UI_TYPE || @ui_type == EXIT_BTN_UI_TYPE
   end 
 
   def get_ui_type
