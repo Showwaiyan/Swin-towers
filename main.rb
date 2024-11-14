@@ -44,11 +44,13 @@ class Game < Gosu::Window
     @game_finsih_bg = Gosu::Image.new('Assets/map/game_finish_bg.png')
     @heart = MAXIMUM_HEART
     @diamond = INITIAL_DIAMOND
+
+    @pause = false
   end
 
   def setup_in_game_ui
     in_game_ui = {
-      button: [Button.new(TOWER_CREATE_BTN),Button.new(TOWER_UPGRADE_BTN),Button.new(WAVE_START_BTN)],
+      button: [Button.new(TOWER_CREATE_BTN),Button.new(TOWER_UPGRADE_BTN),Button.new(WAVE_START_BTN),Button.new(PAUSE_BTN),Button.new(EXIT_BTN_IN_GAME)],
       text: [Font.new(HEART_FONT, @heart),Font.new(DIAMOND_FONT, @diamond),Font.new(TOWER_BUY_FONT, TOWERS_COST[0]),Font.new(TOWER_UPGRADE_FONT, 0, false)]
     }
     return in_game_ui
@@ -111,6 +113,7 @@ class Game < Gosu::Window
         when 'tower_create_button' then enable_tower_overlay
         when 'tower_upgrade_button' then upgrade_selected_tower
         when 'wave_start_button' then start_wave(btn)
+        when 'pause_button' then @pause = !@pause
         when 'restart_button' then setup_game
         when 'exit_button' then close
       end
@@ -154,6 +157,7 @@ class Game < Gosu::Window
   end
 
   def update
+    return if @pause
     update_game_status
     case @current_ui_type
       when 'start_menu' then update_start_menu
