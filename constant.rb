@@ -8,7 +8,7 @@ FRAME_DELAY = 100
 SPAWN_DELAY = 1000 # 1000 milliseconds = 1 second
 
 MAXIMUM_HEART = 5
-INITIAL_DIAMOND = 50
+INITIAL_DIAMOND = 30
 
 HP_BAR_WIDTH = 50
 HP_BAR_HEIGHT = 5
@@ -19,7 +19,7 @@ PLAYER_HP_COLOR = Gosu::Color::GREEN
 WAVE_FILE = 'Waves/wave_'
 
 # Maximum wave
-MAX_WAVE = 1
+MAX_WAVE = 5
 
 # Maximum level for tower
 MAX_TOWER_LEVEL = 7
@@ -179,7 +179,7 @@ ORC_SPRITE_WIDTH = 48
 ORC_SPRITE_HEIGHT = 48
 ORC_HP = 20
 ORC_SPEED = 0.3
-ORC_DIAMOND = 15
+ORC_DIAMOND = 30
 
 # Slime
 SLIME_SPRITE = 'Assets/slime/'

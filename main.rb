@@ -213,7 +213,7 @@ class Game < Gosu::Window
 
   def update_wave
     @current_wave += 1
-    return if @current_wave >= MAX_WAVE
+    return if @current_wave > MAX_WAVE
     load_wave_file
     reset_wave_start
   end
@@ -221,6 +221,7 @@ class Game < Gosu::Window
   def reset_wave_start
     @wave_start = false
     @current_ui[:button].find { |btn| btn.get_ui_type == 'wave_start_button' }.set_operate
+    @current_ui[:button].find { |btn| btn.get_ui_type == 'wave_start_button' }.set_visible
   end
 
   def assign_targets
