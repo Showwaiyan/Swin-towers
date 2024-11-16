@@ -5,6 +5,7 @@ SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
 
 FRAME_DELAY = 100
+BOSS_FRAME_DELAY = 500
 SPAWN_DELAY = 1000 # 1000 milliseconds = 1 second
 
 # Constant for Game
@@ -34,6 +35,7 @@ ENEMY_DEAD_SOUND = 'Assets/sound/dead.mp3'
 TOWER_SHOOT_SOUND = 'Assets/sound/arrow_shot.mp3'
 HEART_REDUCE_SOUND = 'Assets/sound/heart_reduce_sound.mp3'
 OUTRO_MUSIC = 'Assets/sound/outro_sound.mp3'
+BOSS_WAVE_MUSIC = 'Assets/sound/boss_music.mp3'
 
 # Button
 # Start Button
@@ -215,6 +217,14 @@ BEE_SPRITE_HEIGHT = 48
 BEE_HP = 8
 BEE_SPEED = 0.7
 BEE_DIAMOND = 18
+
+# Boss
+BOSS_SPRITE = 'Assets/boss/'
+BOSS_SPRITE_WIDTH = 96
+BOSS_SPRITE_HEIGHT = 96
+BOSS_HP = 100
+BOSS_SPEED = 0.3
+BOSS_DIAMOND = 100
 
 # Path for Enemy
 PATH1 = [[0, 315], [79, 280], [185, 210], [283, 167], [367, 255], [288, 433], [208, 526], [269, 597], [365, 632], [500, 618], [625, 544], [733, 474], [835, 472], [875, 558], [915, 589], [1024, 630]]

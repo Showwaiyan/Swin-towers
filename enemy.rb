@@ -32,6 +32,11 @@ class Enemy
         @max_hp = BEE_HP
         @speed = BEE_SPEED
         @current_hp = @max_hp
+      when 'boss'
+        @obj = Gosu::Image.load_tiles(BOSS_SPRITE+@current_direction+@current_animation+'.png', BOSS_SPRITE_WIDTH, BOSS_SPRITE_HEIGHT)
+        @max_hp = BOSS_HP
+        @speed = BOSS_SPEED
+        @current_hp = @max_hp
     end 
     @dead_sound = Gosu::Sample.new(ENEMY_DEAD_SOUND)
   end
@@ -74,8 +79,8 @@ class Enemy
   end
 
   def update_frame
-    @current_frame = @obj.size - 1 - (Gosu.milliseconds / FRAME_DELAY) % @obj.size if is_death? && @current_direction == RIGHT
-    @current_frame = (Gosu::milliseconds / FRAME_DELAY) % @obj.size
+    @current_frame = @obj.size - 1 - (Gosu.milliseconds / (@species=='boss' ? FRAME_DELAY+400 : FRAME_DELAY)) % @obj.size if is_death? && @current_direction == RIGHT
+    @current_frame = (Gosu::milliseconds / (@species=='boss' ? FRAME_DELAY+400 : FRAME_DELAY)) % @obj.size
   end
 
   def update_sprites

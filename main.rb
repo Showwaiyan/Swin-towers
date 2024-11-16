@@ -52,6 +52,7 @@ class Game < Gosu::Window
     @game_over_music = Gosu::Sample.new(GAME_OVER_MUSIC)
     @outro_music = Gosu::Song.new(OUTRO_MUSIC)
     @heart_reduce_sound = Gosu::Sample.new(HEART_REDUCE_SOUND)
+    @boss_wave_music = Gosu::Song.new(BOSS_WAVE_MUSIC)
 
     @intro_music.play(true)
   end
@@ -227,6 +228,10 @@ class Game < Gosu::Window
   def update_wave
     @current_wave += 1
     return if @current_wave > MAX_WAVE
+    if @current_wave == MAX_WAVE
+      @bg_music.stop
+      @boss_wave_music.play(true)
+    end
     load_wave_file
     reset_wave_start
   end
