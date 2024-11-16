@@ -7,9 +7,11 @@ SCREEN_HEIGHT = 768
 FRAME_DELAY = 100
 SPAWN_DELAY = 1000 # 1000 milliseconds = 1 second
 
+# Constant for Game
 MAXIMUM_HEART = 5
 INITIAL_DIAMOND = 30
 
+# HP bar for enemy
 HP_BAR_WIDTH = 50
 HP_BAR_HEIGHT = 5
 BAR_HP_COLOR = Gosu::Color::RED
@@ -23,6 +25,15 @@ MAX_WAVE = 5
 
 # Maximum level for tower
 MAX_TOWER_LEVEL = 7
+
+# Music and Sound
+INTRO_MUSIC = 'Assets/sound/open_sound.mp3'
+GAME_MUSIC = 'Assets/sound/theme_song.mp3'
+GAME_OVER_MUSIC = 'Assets/sound/game_over_sound.mp3'
+ENEMY_DEAD_SOUND = 'Assets/sound/dead.mp3'
+TOWER_SHOOT_SOUND = 'Assets/sound/arrow_shot.mp3'
+HEART_REDUCE_SOUND = 'Assets/sound/heart_reduce_sound.mp3'
+OUTRO_MUSIC = 'Assets/sound/outro_sound.mp3'
 
 # Button
 # Start Button

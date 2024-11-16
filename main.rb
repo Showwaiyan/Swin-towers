@@ -46,6 +46,14 @@ class Game < Gosu::Window
     @diamond = INITIAL_DIAMOND
 
     @pause = false
+
+    @intro_music = Gosu::Song.new(INTRO_MUSIC)
+    @bg_music = Gosu::Song.new(GAME_MUSIC)
+    @game_over_music = Gosu::Sample.new(GAME_OVER_MUSIC)
+    @outro_music = Gosu::Song.new(OUTRO_MUSIC)
+    @heart_reduce_sound = Gosu::Sample.new(HEART_REDUCE_SOUND)
+
+    @intro_music.play(true)
   end
 
   def setup_in_game_ui
@@ -110,6 +118,8 @@ class Game < Gosu::Window
            btn.set_invisible
            btn.set_not_operate
           @current_ui = setup_in_game_ui
+          @intro_music.stop
+          @bg_music.play(true)
         when 'tower_create_button' then enable_tower_overlay
         when 'tower_upgrade_button' then upgrade_selected_tower
         when 'wave_start_button' then start_wave(btn)
@@ -185,6 +195,9 @@ class Game < Gosu::Window
 
   def update_game_status
     if is_game_over? || is_game_finished?
+      @bg_music.stop
+      @outro_music.play(true) if is_game_finished?
+      @game_over_music.play(true) if is_game_over?
       @current_ui = setup_end_menu_ui
       @current_ui_type = 'end_menu'
     end
@@ -372,6 +385,7 @@ class Game < Gosu::Window
 
   def reduce_heart
     @heart -= 1
+    @heart_reduce_sound.play
   end
 
   def reduce_diamond(amount)

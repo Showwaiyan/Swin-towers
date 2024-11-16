@@ -33,6 +33,7 @@ class Enemy
         @speed = BEE_SPEED
         @current_hp = @max_hp
     end 
+    @dead_sound = Gosu::Sample.new(ENEMY_DEAD_SOUND)
   end
 
   def update
@@ -141,6 +142,7 @@ class Enemy
     if (@current_frame == 0 && @current_direction == RIGHT) || (@current_frame == @obj.size-1 && @current_direction != RIGHT)
       # to check if the death animation is finished
       @destory = true
+      @dead_sound.play
     end
   end
 

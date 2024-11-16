@@ -10,6 +10,7 @@ class Tower
     @current_animation = IDEL
     @obj = Gosu::Image.load_tiles(TOWER_SPRITE+@current_level.to_s+'/'+@current_animation+'.png', TOWER_SPRITE_WIDTH, TOWER_SPRITE_HEIGHT)
     @pos =  []
+    @arrow_shout_sound = Gosu::Sample.new(TOWER_SHOOT_SOUND)
 
     # we need to dynamically change the ZOrder of the tower
     # becuase some tower will be upabove layer on enemy
@@ -65,9 +66,11 @@ class Tower
       self.update_frame
     end
 
-    if self.is_set_target? && @arrow.hit?([@target.get_pos_x, @target.get_pos_y])
-      @target.hit(@tower_damage)
-      @arrow = nil
+    if self.is_set_target? && is_arrow_exist?
+      if @arrow.hit?([@target.get_pos_x, @target.get_pos_y])
+        @target.hit(@tower_damage)
+        @arrow = nil
+      end
     end
 
     @arrow.update if is_arrow_exist?
@@ -196,6 +199,7 @@ class Tower
 
   def attack
     # Start attacking
+    @arrow_shout_sound.play
     @attack = true 
     # For Archer
     @current_archer_animation = ATTACK
