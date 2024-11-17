@@ -411,6 +411,7 @@ class Game < Gosu::Window
                 when 'slime' then SLIME_DIAMOND
                 when 'hound' then HOUND_DIAMOND
                 when 'bee' then BEE_DIAMOND
+                when 'boss' then BOSS_DIAMOND
                 end 
   end
 end
