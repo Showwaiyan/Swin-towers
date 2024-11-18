@@ -36,6 +36,7 @@ TOWER_SHOOT_SOUND = 'Assets/sound/arrow_shot.mp3'
 HEART_REDUCE_SOUND = 'Assets/sound/heart_reduce_sound.mp3'
 OUTRO_MUSIC = 'Assets/sound/outro_sound.mp3'
 BOSS_WAVE_MUSIC = 'Assets/sound/boss_music.mp3'
+LIGHTNING_SOUND = 'Assets/sound/lightning_sound.mp3'
 
 # Button
 # Start Button
@@ -191,7 +192,7 @@ LIGHTNING_WIDTH = 64
 LIGHTNING_HEIGHT = 160
 LIGHTNING_COST = 30
 LIGHTING_AOE = 60
-LIGHTNING_DAMAGE = 8
+LIGHTNING_DAMAGE = 5
 
 # Tower
 TOWER_SPRITE = 'Assets/tower/'

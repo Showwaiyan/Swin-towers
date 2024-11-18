@@ -56,6 +56,7 @@ class Game < Gosu::Window
     @outro_music = Gosu::Song.new(OUTRO_MUSIC)
     @heart_reduce_sound = Gosu::Sample.new(HEART_REDUCE_SOUND)
     @boss_wave_music = Gosu::Song.new(BOSS_WAVE_MUSIC)
+    @lighting_spell_sound = Gosu::Sample.new(LIGHTNING_SOUND)
 
     @intro_music.play(true)
   end
@@ -118,6 +119,7 @@ class Game < Gosu::Window
   def handle_lighting_spell
     if @lighting_spell.is_overlay?
       @lighting_spell.start_lighting
+      @lighting_spell_sound.play
       reduce_diamond(LIGHTNING_COST)
     end
   end
