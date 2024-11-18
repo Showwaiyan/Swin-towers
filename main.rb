@@ -3,11 +3,12 @@ require 'matrix'
 require_relative 'constant.rb'
 require_relative 'enemy.rb'
 require_relative 'tower.rb'
+require_relative 'spell.rb'
 require_relative 'button.rb'
 require_relative 'font.rb'
 
 module ZOrder
-  BACKGROUND, OBJECT, TOWER_UP, ENEMY, TOWER_DOWN, ARCHER, UI0, UI1 = *0..7
+  BACKGROUND, OBJECT, TOWER_UP, ENEMY, TOWER_DOWN, ARCHER, SPELL, UI0, UI1 = *0..8
 end
 
 class Game < Gosu::Window
@@ -45,6 +46,8 @@ class Game < Gosu::Window
     @heart = MAXIMUM_HEART
     @diamond = INITIAL_DIAMOND
 
+    @lighting_spell = Spell.new('lightning')
+
     @pause = false
 
     @intro_music = Gosu::Song.new(INTRO_MUSIC)
@@ -59,7 +62,7 @@ class Game < Gosu::Window
 
   def setup_in_game_ui
     in_game_ui = {
-      button: [Button.new(TOWER_CREATE_BTN),Button.new(TOWER_UPGRADE_BTN),Button.new(WAVE_START_BTN),Button.new(PAUSE_BTN),Button.new(EXIT_BTN_IN_GAME)],
+      button: [Button.new(TOWER_CREATE_BTN),Button.new(TOWER_UPGRADE_BTN),Button.new(LIGHTNING_BTN),Button.new(WAVE_START_BTN),Button.new(PAUSE_BTN),Button.new(EXIT_BTN_IN_GAME)],
       text: [Font.new(HEART_FONT, @heart),Font.new(DIAMOND_FONT, @diamond),Font.new(TOWER_BUY_FONT, TOWERS_COST[0]),Font.new(TOWER_UPGRADE_FONT, 0, false)]
     }
     return in_game_ui
@@ -95,7 +98,11 @@ class Game < Gosu::Window
       when Gosu::KB_ESCAPE then close
       when Gosu::MS_LEFT 
         handle_tower_creation_or_selection 
+        handle_lighting_spell
         handle_ui_clicks
+      when Gosu::MS_RIGHT
+        cancel_tower_overlay
+        @lighting_spell.cancel_overlay
     end
   end
 
@@ -106,6 +113,13 @@ class Game < Gosu::Window
       select_tower if @towers.any? { |tower| tower.is_clicked?(mouse_x, mouse_y) }
     end
     cancel_tower_highlight
+  end
+
+  def handle_lighting_spell
+    if @lighting_spell.is_overlay?
+      @lighting_spell.start_lighting
+      reduce_diamond(LIGHTNING_COST)
+    end
   end
 
   def handle_ui_clicks
@@ -123,6 +137,7 @@ class Game < Gosu::Window
           @bg_music.play(true)
         when 'tower_create_button' then enable_tower_overlay
         when 'tower_upgrade_button' then upgrade_selected_tower
+        when 'lightning_button' then start_lighting
         when 'wave_start_button' then start_wave(btn)
         when 'pause_button' then @pause = !@pause
         when 'restart_button' then setup_game
@@ -141,6 +156,10 @@ class Game < Gosu::Window
     tower.upgrade    
     reduce_diamond(tower.get_cost)
     tower.remove_highlight
+  end
+
+  def start_lighting
+    @lighting_spell.clicked
   end
 
   def start_wave(btn)
@@ -186,6 +205,7 @@ class Game < Gosu::Window
     update_enemies  
     update_wave if wave_complete?
     @towers.each(&:update)
+    update_lighting_spell
     assign_targets
     update_ui
   end
@@ -236,6 +256,16 @@ class Game < Gosu::Window
     reset_wave_start
   end
 
+  def update_lighting_spell
+    @lighting_spell.update_pos(mouse_x, mouse_y) if not @lighting_spell.is_start?
+    @lighting_spell.update
+    @enemies.each do |enemy|
+      if @lighting_spell.is_enemy_in_range?(enemy) && @lighting_spell.is_start?
+        enemy.hit(LIGHTNING_DAMAGE)
+      end
+    end
+  end
+
   def reset_wave_start
     @wave_start = false
     @current_ui[:button].find { |btn| btn.get_ui_type == 'wave_start_button' }.set_operate
@@ -263,6 +293,7 @@ class Game < Gosu::Window
       case btn.get_ui_type
         when 'tower_create_button' then update_tower_create_button(btn)
         when 'tower_upgrade_button' then update_tower_upgarde_button(btn)
+        when 'lightning_button' then update_lightning_button(btn)
       end
     end
   end
@@ -275,6 +306,16 @@ class Game < Gosu::Window
   def update_tower_upgarde_button(btn)
     selected_tower = @towers.find(&:is_highlighted?)
     if !selected_tower || selected_tower.is_max_level? || @diamond < selected_tower.get_upgrade_cost
+      btn.set_inactive
+      btn.set_not_operate
+    else
+      btn.set_active
+      btn.set_operate
+    end
+  end
+
+  def update_lightning_button(btn)
+    if @diamond < LIGHTNING_COST
       btn.set_inactive
       btn.set_not_operate
     else
@@ -315,6 +356,7 @@ class Game < Gosu::Window
   def draw_in_game
     draw_towers
     draw_enemies
+    draw_lighting_spell
     draw_ui
     draw_tower_overlay if @is_tower_overlay 
   end
@@ -342,6 +384,10 @@ class Game < Gosu::Window
 
   def draw_enemies
     @enemies.each(&:draw)
+  end
+
+  def draw_lighting_spell
+    @lighting_spell.draw
   end
 
   def draw_ui
