@@ -63,7 +63,7 @@ class Game < Gosu::Window
   def setup_in_game_ui
     in_game_ui = {
       button: [Button.new(TOWER_CREATE_BTN),Button.new(TOWER_UPGRADE_BTN),Button.new(LIGHTNING_BTN),Button.new(WAVE_START_BTN),Button.new(PAUSE_BTN),Button.new(EXIT_BTN_IN_GAME)],
-      text: [Font.new(HEART_FONT, @heart),Font.new(DIAMOND_FONT, @diamond),Font.new(TOWER_BUY_FONT, TOWERS_COST[0]),Font.new(TOWER_UPGRADE_FONT, 0, false),Font.new(LIGHTNING_FONT, 0)]
+      text: [Font.new(HEART_FONT, @heart),Font.new(DIAMOND_FONT, @diamond),Font.new(TOWER_BUY_FONT, TOWERS_COST[0]),Font.new(TOWER_UPGRADE_FONT, 0, false),Font.new(LIGHTNING_FONT, 0),Font.new(WAVE_FONT, "Current Wave: #{@current_wave}")]
     }
     return in_game_ui
   end
@@ -335,6 +335,7 @@ class Game < Gosu::Window
           text.update(selected_tower&.get_upgrade_cost)
           text.set_invisible if !selected_tower || selected_tower.is_max_level?
           text.set_visible if selected_tower && !selected_tower.is_max_level?
+        when 'current_wave' then text.update("Current Wave: #{@current_wave}")
         when 'lightning' then text.update(LIGHTNING_COST)
       end
     end

@@ -1,0 +1,10 @@
+orc
+bee
+orc
+hound
+bee
+slime
+orc
+orc
+slime
+hound
