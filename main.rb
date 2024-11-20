@@ -274,10 +274,11 @@ class Game < Gosu::Window
     @lighting_spell.update_pos(mouse_x, mouse_y) if not @lighting_spell.is_start?
     @lighting_spell.update
     @enemies.each do |enemy|
-      if @lighting_spell.is_enemy_in_range?(enemy) && @lighting_spell.is_start?
+      if @lighting_spell.is_enemy_in_range?(enemy) && !@lighting_spell.is_hit?
         enemy.hit(LIGHTNING_DAMAGE)
       end
     end
+    @lighting_spell.set_hit
   end
 
   def reset_wave_start

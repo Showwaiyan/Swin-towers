@@ -16,6 +16,7 @@ class Spell
     @overlay = false
     @start = false
     @last_frame_time = Gosu::milliseconds
+    @hit = false
   end
 
   def update
@@ -30,6 +31,7 @@ class Spell
   
     if @current_frame == @obj.size - 1
       @start = false
+      @hit = false
       @current_frame = 0
     end
   end
@@ -75,6 +77,14 @@ class Spell
 
   def is_start?
     return @start
+  end
+
+  def is_hit?
+    return @hit
+  end
+
+  def set_hit 
+    @hit = true
   end
 
   def cancel_overlay
