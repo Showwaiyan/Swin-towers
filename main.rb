@@ -105,7 +105,6 @@ class Game < Gosu::Window
     case id
       when Gosu::KB_ESCAPE then close
       when Gosu::MS_LEFT 
-        p "Mouse X: #{mouse_x}, Mouse Y: #{mouse_y}"
         handle_tower_creation_or_selection 
         handle_lighting_spell
         handle_ui_clicks
