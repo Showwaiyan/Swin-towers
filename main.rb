@@ -3,6 +3,7 @@ require 'matrix'
 require_relative 'constant.rb'
 require_relative 'enemy.rb'
 require_relative 'tower.rb'
+require_relative 'env_obj.rb'
 require_relative 'spell.rb'
 require_relative 'button.rb'
 require_relative 'font.rb'
@@ -43,6 +44,10 @@ class Game < Gosu::Window
     @intro_bg = Gosu::Image.new('Assets/map/intro_bg.png')
     @game_over_bg = Gosu::Image.new('Assets/map/game_over_bg.png')
     @game_finsih_bg = Gosu::Image.new('Assets/map/game_finish_bg.png')
+
+    @env_objs = [EnvObj.new('campfire',585,342),
+                EnvObj.new('campfire',849,729),]
+
     @heart = MAXIMUM_HEART
     @diamond = INITIAL_DIAMOND
 
@@ -98,6 +103,7 @@ class Game < Gosu::Window
     case id
       when Gosu::KB_ESCAPE then close
       when Gosu::MS_LEFT 
+        p "Mouse X: #{mouse_x}, Mouse Y: #{mouse_y}"
         handle_tower_creation_or_selection 
         handle_lighting_spell
         handle_ui_clicks
@@ -203,6 +209,7 @@ class Game < Gosu::Window
   end
 
   def update_in_game
+    update_env_objs
     spawn_enemy if @wave_start
     update_enemies  
     update_wave if wave_complete?
@@ -224,6 +231,10 @@ class Game < Gosu::Window
       @current_ui = setup_end_menu_ui
       @current_ui_type = 'end_menu'
     end
+  end
+
+  def update_env_objs
+    @env_objs.each(&:update)
   end
 
   def spawn_enemy
@@ -358,6 +369,7 @@ class Game < Gosu::Window
   end
 
   def draw_in_game
+    draw_env_objs
     draw_towers
     draw_enemies
     draw_lighting_spell
@@ -380,6 +392,10 @@ class Game < Gosu::Window
       @game_finsih_bg.draw(0, 0, ZOrder::BACKGROUND)
     end
     draw_ui
+  end
+
+  def draw_env_objs
+    @env_objs.each(&:draw)
   end
 
   def draw_towers
