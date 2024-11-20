@@ -10,7 +10,7 @@ SPAWN_DELAY = 1000 # 1000 milliseconds = 1 second
 
 # Constant for Game
 MAXIMUM_HEART = 5
-INITIAL_DIAMOND = 25
+INITIAL_DIAMOND = 250
 
 # HP bar for enemy
 HP_BAR_WIDTH = 50
@@ -22,7 +22,7 @@ PLAYER_HP_COLOR = Gosu::Color::GREEN
 WAVE_FILE = 'Waves/wave_'
 
 # Maximum wave
-MAX_WAVE = 13
+MAX_WAVE = 16
 
 # Maximum level for tower
 MAX_TOWER_LEVEL = 7
@@ -201,7 +201,7 @@ LIGHTNING_WIDTH = 64
 LIGHTNING_HEIGHT = 160
 LIGHTNING_COST = 30
 LIGHTING_AOE = 60
-LIGHTNING_DAMAGE = 5
+LIGHTNING_DAMAGE = 1
 
 # Tower
 TOWER_SPRITE = 'Assets/tower/'
