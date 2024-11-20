@@ -9,7 +9,7 @@ require_relative 'button.rb'
 require_relative 'font.rb'
 
 module ZOrder
-  BACKGROUND, OBJECT, TOWER_UP, ENEMY, TOWER_DOWN, ARCHER, SPELL, UI0, UI1 = *0..8
+  BACKGROUND, TOWER_UP, ENEMY, TOWER_DOWN, ARCHER, OBJECT, SPELL, UI0, UI1 = *0..8
 end
 
 class Game < Gosu::Window
@@ -46,7 +46,9 @@ class Game < Gosu::Window
     @game_finsih_bg = Gosu::Image.new('Assets/map/game_finish_bg.png')
 
     @env_objs = [EnvObj.new('campfire',585,342),
-                EnvObj.new('campfire',849,729),]
+                EnvObj.new('campfire',849,729),
+                EnvObj.new('flagbanner',992,569),
+                EnvObj.new('flagbanner',992,684)]
 
     @heart = MAXIMUM_HEART
     @diamond = INITIAL_DIAMOND

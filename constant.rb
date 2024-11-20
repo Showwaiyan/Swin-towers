@@ -191,6 +191,10 @@ CAMPFIRE_SPRITE = 'Assets/env_obj/campfire.png'
 CAMPFIRE_WIDTH = 32
 CAMPFIRE_HEIGHT = 64
 
+BANNERFLAP_SPRITE = 'Assets/env_obj/bannerflag.png'
+BANNERFLAP_WIDTH = 32
+BANNERFLAP_HEIGHT = 64
+
 # Lightining Spell
 LIGHTNING_SPRITE = 'Assets/spell/lightning.png'
 LIGHTNING_WIDTH = 64

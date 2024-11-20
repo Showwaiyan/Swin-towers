@@ -9,6 +9,10 @@ class EnvObj
         @obj = Gosu::Image.load_tiles(CAMPFIRE_SPRITE, CAMPFIRE_WIDTH, CAMPFIRE_HEIGHT)
         @pos = [x-CAMPFIRE_WIDTH/2,y-CAMPFIRE_HEIGHT]
         @current_frame = 0
+      when 'flagbanner'
+        @obj = Gosu::Image.load_tiles(BANNERFLAP_SPRITE, BANNERFLAP_WIDTH, BANNERFLAP_HEIGHT)
+        @pos = [x-BANNERFLAP_WIDTH/2, y-BANNERFLAP_HEIGHT]
+        @current_frame = 0
     end 
   end
 
