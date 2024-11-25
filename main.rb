@@ -196,7 +196,6 @@ class Game < Gosu::Window
   end
 
   def update
-    return if @pause
     update_game_status
     case @current_ui_type
       when 'start_menu' then update_start_menu
@@ -210,6 +209,8 @@ class Game < Gosu::Window
   end
 
   def update_in_game
+    update_ui
+    return if @pause
     update_env_objs
     spawn_enemy if @wave_start
     update_enemies  
@@ -217,7 +218,6 @@ class Game < Gosu::Window
     @towers.each(&:update)
     update_lighting_spell
     assign_targets
-    update_ui
   end
 
   def update_end_menu
@@ -330,7 +330,7 @@ class Game < Gosu::Window
   end
 
   def update_lightning_button(btn)
-    if @diamond < LIGHTNING_COST
+    if @diamond < LIGHTNING_COST || @pause
       btn.set_inactive
       btn.set_not_operate
     else
