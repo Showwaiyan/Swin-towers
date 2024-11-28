@@ -59,7 +59,7 @@ class Game < Gosu::Window
 
     @intro_music = Gosu::Song.new(INTRO_MUSIC)
     @bg_music = Gosu::Song.new(GAME_MUSIC)
-    @game_over_music = Gosu::Sample.new(GAME_OVER_MUSIC)
+    @game_over_music = Gosu::Song.new(GAME_OVER_MUSIC)
     @outro_music = Gosu::Song.new(OUTRO_MUSIC)
     @heart_reduce_sound = Gosu::Sample.new(HEART_REDUCE_SOUND)
     @boss_wave_music = Gosu::Song.new(BOSS_WAVE_MUSIC)
@@ -98,6 +98,7 @@ class Game < Gosu::Window
     @towers = []
     @is_tower_overlay = false
     @can_create_tower = false
+    @tower_spots = TOWER_CENTER.dup
     @overlay_tower = nil
   end
 
@@ -156,7 +157,7 @@ class Game < Gosu::Window
   end
 
   def enable_tower_overlay
-    @is_tower_overlay = !TOWER_CENTER.empty?
+    @is_tower_overlay = !@tower_spots.empty?
   end
 
   def upgrade_selected_tower
@@ -228,7 +229,7 @@ class Game < Gosu::Window
     if is_game_over? || is_game_finished?
       @bg_music.stop
       @outro_music.play(true) if is_game_finished?
-      @game_over_music.play(true) if is_game_over?
+      @game_over_music.play(false) if is_game_over?
       @current_ui = setup_end_menu_ui
       @current_ui_type = 'end_menu'
     end
@@ -450,7 +451,7 @@ class Game < Gosu::Window
 
   def create_tower
     @towers << @overlay_tower
-    TOWER_CENTER.delete([@overlay_tower.get_pos_x, @overlay_tower.get_pos_y])
+    @tower_spots.delete([@overlay_tower.get_pos_x, @overlay_tower.get_pos_y])
     @overlay_tower = nil
     reduce_diamond(TOWERS_COST[0])
     cancel_tower_overlay
