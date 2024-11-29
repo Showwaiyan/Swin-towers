@@ -251,6 +251,11 @@ class Game < Gosu::Window
     @enemies.each do |enemy|
       enemy.update
       reduce_heart if enemy.check_path_end?
+      if enemy.get_species == 'boss' && enemy.check_path_end?
+        while (@heart > 0)
+          reduce_heart
+        end
+      end
       increase_diamond(enemy.get_species) if enemy.can_destory?
     end
     @enemies.delete_if { |enemy| enemy.check_path_end? || enemy.can_destory? }
