@@ -105,8 +105,8 @@ class Game < Gosu::Window
   def button_down(id)
     case id
       when Gosu::KB_ESCAPE then close
-      when Gosu::MS_LEFT 
-        handle_tower_creation_or_selection 
+      when Gosu::MS_LEFT
+        handle_tower_creation_or_selection
         handle_lighting_spell
         handle_ui_clicks
       when Gosu::MS_RIGHT
@@ -163,7 +163,7 @@ class Game < Gosu::Window
   def upgrade_selected_tower
     tower = @towers.find(&:is_highlighted?)
     return unless tower && !tower.is_arrow_exist?
-    tower.upgrade    
+    tower.upgrade
     reduce_diamond(tower.get_cost)
     tower.remove_highlight
   end
@@ -205,7 +205,7 @@ class Game < Gosu::Window
     end
   end
 
-  def update_start_menu 
+  def update_start_menu
     update_ui
   end
 
@@ -214,7 +214,7 @@ class Game < Gosu::Window
     return if @pause
     update_env_objs
     spawn_enemy if @wave_start
-    update_enemies  
+    update_enemies
     update_wave if wave_complete?
     @towers.each(&:update)
     update_lighting_spell
@@ -299,7 +299,7 @@ class Game < Gosu::Window
       @enemies.each do |enemy|
         tower.get_target(enemy)
         break if tower.is_set_target?
-      end  
+      end
     end
   end
 
@@ -351,7 +351,7 @@ class Game < Gosu::Window
       case text.get_font_type
         when 'heart' then text.update(@heart)
         when 'diamond' then text.update(@diamond)
-        when 'tower_upgrade' 
+        when 'tower_upgrade'
           selected_tower = @towers.find(&:is_highlighted?)
           text.update(selected_tower&.get_upgrade_cost)
           text.set_invisible if !selected_tower || selected_tower.is_max_level?
@@ -382,7 +382,7 @@ class Game < Gosu::Window
     draw_enemies
     draw_lighting_spell
     draw_ui
-    draw_tower_overlay if @is_tower_overlay 
+    draw_tower_overlay if @is_tower_overlay
   end
 
   def draw_background
@@ -486,7 +486,7 @@ class Game < Gosu::Window
                 when 'hound' then HOUND_DIAMOND
                 when 'bee' then BEE_DIAMOND
                 when 'boss' then BOSS_DIAMOND
-                end 
+                end
   end
 end
 
